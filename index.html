@@ -1,0 +1,1808 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>开发者工具箱 - JSON、编码、转换一站式工具</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/fold/foldgutter.min.css">
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="header-left">
+            <h1 class="logo">⚡ <span>DevTools</span></h1>
+        </div>
+        <div class="header-right">
+            <button class="theme-toggle" id="themeToggle" title="切换主题">🌙</button>
+        </div>
+    </header>
+
+    <!-- 主导航 - 一级分类 -->
+    <nav class="main-nav">
+        <div class="nav-tabs">
+            <a href="#" class="nav-tab active" data-category="json">
+                <span class="nav-icon">{ }</span>
+                <span class="nav-label">JSON工具</span>
+            </a>
+            <a href="#" class="nav-tab" data-category="convert">
+                <span class="nav-icon">⇄</span>
+                <span class="nav-label">格式转换</span>
+            </a>
+            <a href="#" class="nav-tab" data-category="encode">
+                <span class="nav-icon">🔐</span>
+                <span class="nav-label">编码解码</span>
+            </a>
+            <a href="#" class="nav-tab" data-category="text">
+                <span class="nav-icon">📝</span>
+                <span class="nav-label">文本处理</span>
+            </a>
+            <a href="#" class="nav-tab" data-category="dev">
+                <span class="nav-icon">🛠️</span>
+                <span class="nav-label">开发工具</span>
+            </a>
+            <a href="#" class="nav-tab" data-category="db">
+                <span class="nav-icon">🗄️</span>
+                <span class="nav-label">数据库</span>
+            </a>
+            <a href="#" class="nav-tab" data-category="img">
+                <span class="nav-icon">🖼️</span>
+                <span class="nav-label">图片工具</span>
+            </a>
+            <a href="#" class="nav-tab" data-category="other">
+                <span class="nav-icon">📦</span>
+                <span class="nav-label">其他工具</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- 二级导航 - 工具选择 -->
+    <div class="sub-nav" id="subNav">
+        <!-- JSON工具子导航 -->
+        <div class="sub-nav-group active" data-category="json">
+            <a href="#" class="sub-tab active" data-tool="formatter">格式化/美化</a>
+            <a href="#" class="sub-tab" data-tool="compress">压缩/最小化</a>
+            <a href="#" class="sub-tab" data-tool="validate">校验/验证</a>
+            <a href="#" class="sub-tab" data-tool="tree">树形视图</a>
+            <a href="#" class="sub-tab" data-tool="diff">JSON对比</a>
+            <a href="#" class="sub-tab" data-tool="path">路径查询</a>
+            <a href="#" class="sub-tab" data-tool="escape">JSON转义</a>
+            <a href="#" class="sub-tab" data-tool="json2ts">生成TS类型</a>
+        </div>
+
+        <!-- 格式转换子导航 -->
+        <div class="sub-nav-group" data-category="convert">
+            <a href="#" class="sub-tab" data-tool="json2xml">JSON → XML</a>
+            <a href="#" class="sub-tab" data-tool="xml2json">XML → JSON</a>
+            <a href="#" class="sub-tab" data-tool="json2csv">JSON → CSV</a>
+            <a href="#" class="sub-tab" data-tool="csv2json">CSV → JSON</a>
+            <a href="#" class="sub-tab" data-tool="json2yaml">JSON → YAML</a>
+            <a href="#" class="sub-tab" data-tool="yaml2json">YAML → JSON</a>
+            <a href="#" class="sub-tab" data-tool="json2ini">JSON → INI</a>
+            <a href="#" class="sub-tab" data-tool="ini2json">INI → JSON</a>
+        </div>
+
+        <!-- 编码解码子导航 -->
+        <div class="sub-nav-group" data-category="encode">
+            <a href="#" class="sub-tab" data-tool="base64">Base64</a>
+            <a href="#" class="sub-tab" data-tool="urlcodec">URL编解码</a>
+            <a href="#" class="sub-tab" data-tool="unicode">Unicode</a>
+            <a href="#" class="sub-tab" data-tool="htmlentity">HTML实体</a>
+            <a href="#" class="sub-tab" data-tool="hex">Hex编解码</a>
+            <a href="#" class="sub-tab" data-tool="jwt">JWT解析</a>
+        </div>
+
+        <!-- 文本处理子导航 -->
+        <div class="sub-nav-group" data-category="text">
+            <a href="#" class="sub-tab" data-tool="codediff">代码对比</a>
+            <a href="#" class="sub-tab" data-tool="regex">正则测试</a>
+            <a href="#" class="sub-tab" data-tool="textdiff">文本对比</a>
+            <a href="#" class="sub-tab" data-tool="textcount">字数统计</a>
+            <a href="#" class="sub-tab" data-tool="textreplace">文本替换</a>
+            <a href="#" class="sub-tab" data-tool="linesort">行排序</a>
+            <a href="#" class="sub-tab" data-tool="linededup">行去重</a>
+            <a href="#" class="sub-tab" data-tool="caseconv">大小写转换</a>
+            <a href="#" class="sub-tab" data-tool="stringconv">字符串转换</a>
+        </div>
+
+        <!-- 开发工具子导航 -->
+        <div class="sub-nav-group" data-category="dev">
+            <a href="#" class="sub-tab" data-tool="timestamp">时间戳</a>
+            <a href="#" class="sub-tab" data-tool="hash">哈希计算</a>
+            <a href="#" class="sub-tab" data-tool="uuid">UUID生成</a>
+            <a href="#" class="sub-tab" data-tool="password">密码生成</a>
+            <a href="#" class="sub-tab" data-tool="color">颜色转换</a>
+            <a href="#" class="sub-tab" data-tool="px2rem">px/rem转换</a>
+            <a href="#" class="sub-tab" data-tool="crontab">Cron解析</a>
+            <a href="#" class="sub-tab" data-tool="numberbase">进制转换</a>
+        </div>
+
+        <!-- 数据库子导航 -->
+        <div class="sub-nav-group" data-category="db">
+            <a href="#" class="sub-tab" data-tool="sqlformat">SQL格式化</a>
+            <a href="#" class="sub-tab" data-tool="sql2json">SQL转JSON</a>
+            <a href="#" class="sub-tab" data-tool="json2sql">JSON生成SQL</a>
+            <a href="#" class="sub-tab" data-tool="mockdata">Mock数据生成</a>
+            <a href="#" class="sub-tab" data-tool="sqlgen">建表语句生成</a>
+            <a href="#" class="sub-tab" data-tool="erdetect">SQL解析ER</a>
+        </div>
+
+        <!-- 图片工具子导航 -->
+        <div class="sub-nav-group" data-category="img">
+            <a href="#" class="sub-tab" data-tool="imgcompress">图片压缩</a>
+            <a href="#" class="sub-tab" data-tool="imgresize">调整大小</a>
+            <a href="#" class="sub-tab" data-tool="imgcrop">图片裁剪</a>
+            <a href="#" class="sub-tab" data-tool="imgformat">格式转换</a>
+            <a href="#" class="sub-tab" data-tool="imgrotate">旋转翻转</a>
+            <a href="#" class="sub-tab" data-tool="imgfilter">滤镜效果</a>
+            <a href="#" class="sub-tab" data-tool="imgwatermark">添加水印</a>
+            <a href="#" class="sub-tab" data-tool="img2base64">图片转Base64</a>
+        </div>
+
+        <!-- 其他工具子导航 -->
+        <div class="sub-nav-group" data-category="other">
+            <a href="#" class="sub-tab" data-tool="qrcode">二维码生成</a>
+            <a href="#" class="sub-tab" data-tool="markdown">Markdown预览</a>
+            <a href="#" class="sub-tab" data-tool="Lorem">Lorem生成</a>
+            <a href="#" class="sub-tab" data-tool="img2base64">图片转Base64</a>
+        </div>
+    </div>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+
+        <!-- ========== JSON工具 ========== -->
+
+        <!-- JSON格式化 -->
+        <section class="tool-page active" id="tool-formatter">
+            <div class="tool-header">
+                <h2>JSON 格式化 / 美化</h2>
+                <p>将压缩的JSON格式化为易读格式，支持自定义缩进</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <select id="formatterIndent" class="select">
+                        <option value="2" selected>2空格缩进</option>
+                        <option value="4">4空格缩进</option>
+                        <option value="tab">Tab缩进</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="formatterTools.beautify()">格式化</button>
+                    <button class="btn btn-outline" onclick="formatterTools.compress()">压缩</button>
+                    <span class="divider"></span>
+                    <button class="btn btn-outline" onclick="formatterTools.sample()">示例</button>
+                </div>
+                <div class="tool-bar-right">
+                    <button class="btn btn-outline" onclick="formatterTools.copy()">复制结果</button>
+                    <button class="btn btn-outline" onclick="formatterTools.clear()">清空</button>
+                </div>
+            </div>
+            <div class="editor-container">
+                <div class="editor-panel">
+                    <div class="editor-label">输入 JSON</div>
+                    <textarea id="formatterInput"></textarea>
+                </div>
+                <div class="editor-panel">
+                    <div class="editor-label">格式化结果</div>
+                    <textarea id="formatterOutput" readonly></textarea>
+                </div>
+            </div>
+            <div class="status-bar" id="formatterStatus"></div>
+        </section>
+
+        <!-- JSON压缩 -->
+        <section class="tool-page" id="tool-compress">
+            <div class="tool-header">
+                <h2>JSON 压缩 / 最小化</h2>
+                <p>移除JSON中所有空格和换行，生成最小体积</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <button class="btn btn-primary" onclick="compressTools.doCompress()">压缩</button>
+                </div>
+                <div class="tool-bar-right">
+                    <button class="btn btn-outline" onclick="compressTools.copy()">复制结果</button>
+                    <button class="btn btn-outline" onclick="compressTools.clear()">清空</button>
+                </div>
+            </div>
+            <div class="editor-container">
+                <div class="editor-panel">
+                    <div class="editor-label">输入 JSON</div>
+                    <textarea id="compressInput"></textarea>
+                </div>
+                <div class="editor-panel">
+                    <div class="editor-label">压缩结果</div>
+                    <textarea id="compressOutput" readonly></textarea>
+                </div>
+            </div>
+            <div class="status-bar" id="compressStatus"></div>
+        </section>
+
+        <!-- JSON验证 -->
+        <section class="tool-page" id="tool-validate">
+            <div class="tool-header">
+                <h2>JSON 校验 / 验证</h2>
+                <p>检查JSON语法是否正确，精确定位错误位置</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <button class="btn btn-primary" onclick="validateTools.validate()">验证</button>
+                    <button class="btn btn-outline" onclick="validateTools.sampleError()">错误示例</button>
+                </div>
+                <div class="tool-bar-right">
+                    <button class="btn btn-outline" onclick="validateTools.clear()">清空</button>
+                </div>
+            </div>
+            <div class="editor-container">
+                <div class="editor-panel">
+                    <div class="editor-label">输入 JSON</div>
+                    <textarea id="validateInput"></textarea>
+                </div>
+                <div class="editor-panel validation-result">
+                    <div class="editor-label">验证结果</div>
+                    <div id="validateOutput" class="validate-output"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- JSON树视图 -->
+        <section class="tool-page" id="tool-tree">
+            <div class="tool-header">
+                <h2>JSON 树形视图</h2>
+                <p>以可折叠的树形结构展示JSON数据</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <button class="btn btn-primary" onclick="treeTools.render()">渲染</button>
+                    <button class="btn btn-outline" onclick="treeTools.expandAll()">全部展开</button>
+                    <button class="btn btn-outline" onclick="treeTools.collapseAll()">全部折叠</button>
+                </div>
+                <div class="tool-bar-right">
+                    <input type="text" id="treeSearch" placeholder="搜索键名或值..." class="input search-input">
+                    <button class="btn btn-outline" onclick="treeTools.clear()">清空</button>
+                </div>
+            </div>
+            <div class="editor-container">
+                <div class="editor-panel">
+                    <div class="editor-label">输入 JSON</div>
+                    <textarea id="treeInput"></textarea>
+                </div>
+                <div class="editor-panel tree-view-panel">
+                    <div class="editor-label">树形视图</div>
+                    <div id="treeOutput" class="tree-output"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- JSON对比 -->
+        <section class="tool-page" id="tool-diff">
+            <div class="tool-header">
+                <h2>JSON 对比</h2>
+                <p>比较两个JSON的差异，高亮显示新增、删除、修改的部分</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <button class="btn btn-primary" onclick="diffTools.compare()">对比</button>
+                    <button class="btn btn-outline" onclick="diffTools.swap()">交换</button>
+                </div>
+                <div class="tool-bar-right">
+                    <button class="btn btn-outline" onclick="diffTools.clear()">清空</button>
+                </div>
+            </div>
+            <div class="editor-container three-panel">
+                <div class="editor-panel">
+                    <div class="editor-label">原始 JSON</div>
+                    <textarea id="diffInput1"></textarea>
+                </div>
+                <div class="editor-panel">
+                    <div class="editor-label">对比 JSON</div>
+                    <textarea id="diffInput2"></textarea>
+                </div>
+                <div class="editor-panel diff-result">
+                    <div class="editor-label">差异结果</div>
+                    <div id="diffOutput" class="diff-output"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- JSON路径 -->
+        <section class="tool-page" id="tool-path">
+            <div class="tool-header">
+                <h2>JSON 路径查询</h2>
+                <p>使用表达式提取JSON中的特定数据</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <input type="text" id="jsonPathInput" placeholder="输入路径，如 $.store.book[0].title" class="input path-input" value="$">
+                    <button class="btn btn-primary" onclick="pathTools.query()">查询</button>
+                </div>
+                <div class="tool-bar-right">
+                    <button class="btn btn-outline" onclick="pathTools.clear()">清空</button>
+                </div>
+            </div>
+            <div class="editor-container">
+                <div class="editor-panel">
+                    <div class="editor-label">输入 JSON</div>
+                    <textarea id="pathJsonInput"></textarea>
+                </div>
+                <div class="editor-panel">
+                    <div class="editor-label">查询结果</div>
+                    <textarea id="pathOutput" readonly></textarea>
+                </div>
+            </div>
+            <div class="help-box">
+                <div class="help-title">语法说明</div>
+                <div class="help-grid">
+                    <span><code>$</code> 根对象</span>
+                    <span><code>.</code> 子节点</span>
+                    <span><code>..</code> 递归下降</span>
+                    <span><code>*</code> 通配符</span>
+                    <span><code>[n]</code> 数组索引</span>
+                    <span><code>[?(@.x)]</code> 过滤</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- JSON转义 -->
+        <section class="tool-page" id="tool-escape">
+            <div class="tool-header">
+                <h2>JSON 转义 / 反转义</h2>
+                <p>将字符串进行JSON转义，或反转义还原</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <button class="btn btn-primary" onclick="escapeTools.doEscape()">转义 →</button>
+                    <button class="btn btn-primary" onclick="escapeTools.unescape()">← 反转义</button>
+                </div>
+                <div class="tool-bar-right">
+                    <button class="btn btn-outline" onclick="escapeTools.copy()">复制</button>
+                    <button class="btn btn-outline" onclick="escapeTools.clear()">清空</button>
+                </div>
+            </div>
+            <div class="editor-container">
+                <div class="editor-panel">
+                    <div class="editor-label">原始文本</div>
+                    <textarea id="escapeInput"></textarea>
+                </div>
+                <div class="editor-panel">
+                    <div class="editor-label">转义结果</div>
+                    <textarea id="escapeOutput"></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- JSON转TypeScript -->
+        <section class="tool-page" id="tool-json2ts">
+            <div class="tool-header">
+                <h2>JSON 生成 TypeScript 类型</h2>
+                <p>从JSON数据自动生成TypeScript接口定义</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <label class="label">接口名:</label>
+                    <input type="text" id="tsInterfaceName" value="RootObject" class="input small-input">
+                    <button class="btn btn-primary" onclick="json2tsTools.convert()">生成</button>
+                </div>
+                <div class="tool-bar-right">
+                    <button class="btn btn-outline" onclick="json2tsTools.copy()">复制</button>
+                    <button class="btn btn-outline" onclick="json2tsTools.clear()">清空</button>
+                </div>
+            </div>
+            <div class="editor-container">
+                <div class="editor-panel">
+                    <div class="editor-label">输入 JSON</div>
+                    <textarea id="json2tsInput"></textarea>
+                </div>
+                <div class="editor-panel">
+                    <div class="editor-label">TypeScript 类型</div>
+                    <textarea id="json2tsOutput" readonly></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== 格式转换 ========== -->
+
+        <!-- JSON转XML -->
+        <section class="tool-page" id="tool-json2xml">
+            <div class="tool-header">
+                <h2>JSON 转 XML</h2>
+                <p>将JSON数据转换为XML格式</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <label class="label">根节点:</label>
+                    <input type="text" id="xmlRootName" value="root" class="input small-input">
+                    <button class="btn btn-primary" onclick="json2xmlTools.convert()">转换</button>
+                </div>
+                <div class="tool-bar-right">
+                    <button class="btn btn-outline" onclick="json2xmlTools.copy()">复制</button>
+                    <button class="btn btn-outline" onclick="json2xmlTools.clear()">清空</button>
+                </div>
+            </div>
+            <div class="editor-container">
+                <div class="editor-panel">
+                    <div class="editor-label">输入 JSON</div>
+                    <textarea id="json2xmlInput"></textarea>
+                </div>
+                <div class="editor-panel">
+                    <div class="editor-label">XML 结果</div>
+                    <textarea id="json2xmlOutput" readonly></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- XML转JSON -->
+        <section class="tool-page" id="tool-xml2json">
+            <div class="tool-header">
+                <h2>XML 转 JSON</h2>
+                <p>将XML数据转换为JSON格式</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <button class="btn btn-primary" onclick="xml2jsonTools.convert()">转换</button>
+                </div>
+                <div class="tool-bar-right">
+                    <button class="btn btn-outline" onclick="xml2jsonTools.copy()">复制</button>
+                    <button class="btn btn-outline" onclick="xml2jsonTools.clear()">清空</button>
+                </div>
+            </div>
+            <div class="editor-container">
+                <div class="editor-panel">
+                    <div class="editor-label">输入 XML</div>
+                    <textarea id="xml2jsonInput"></textarea>
+                </div>
+                <div class="editor-panel">
+                    <div class="editor-label">JSON 结果</div>
+                    <textarea id="xml2jsonOutput" readonly></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- JSON转CSV -->
+        <section class="tool-page" id="tool-json2csv">
+            <div class="tool-header">
+                <h2>JSON 转 CSV</h2>
+                <p>将JSON数组转换为CSV表格格式</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <label class="label">分隔符:</label>
+                    <select id="csvDelimiter" class="select">
+                        <option value="," selected>逗号 ,</option>
+                        <option value="&#9;">Tab</option>
+                        <option value=";">分号 ;</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="json2csvTools.convert()">转换</button>
+                </div>
+                <div class="tool-bar-right">
+                    <button class="btn btn-outline" onclick="json2csvTools.copy()">复制</button>
+                    <button class="btn btn-outline" onclick="json2csvTools.download()">下载</button>
+                    <button class="btn btn-outline" onclick="json2csvTools.clear()">清空</button>
+                </div>
+            </div>
+            <div class="editor-container">
+                <div class="editor-panel">
+                    <div class="editor-label">输入 JSON 数组</div>
+                    <textarea id="json2csvInput"></textarea>
+                </div>
+                <div class="editor-panel">
+                    <div class="editor-label">CSV 结果</div>
+                    <textarea id="json2csvOutput" readonly></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- CSV转JSON -->
+        <section class="tool-page" id="tool-csv2json">
+            <div class="tool-header">
+                <h2>CSV 转 JSON</h2>
+                <p>将CSV表格数据转换为JSON数组</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <label class="label">分隔符:</label>
+                    <select id="csv2jsonDelimiter" class="select">
+                        <option value="," selected>逗号 ,</option>
+                        <option value="&#9;">Tab</option>
+                        <option value=";">分号 ;</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="csv2jsonTools.convert()">转换</button>
+                </div>
+                <div class="tool-bar-right">
+                    <button class="btn btn-outline" onclick="csv2jsonTools.copy()">复制</button>
+                    <button class="btn btn-outline" onclick="csv2jsonTools.clear()">清空</button>
+                </div>
+            </div>
+            <div class="editor-container">
+                <div class="editor-panel">
+                    <div class="editor-label">输入 CSV</div>
+                    <textarea id="csv2jsonInput"></textarea>
+                </div>
+                <div class="editor-panel">
+                    <div class="editor-label">JSON 结果</div>
+                    <textarea id="csv2jsonOutput" readonly></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- JSON转YAML -->
+        <section class="tool-page" id="tool-json2yaml">
+            <div class="tool-header">
+                <h2>JSON 转 YAML</h2>
+                <p>将JSON数据转换为YAML格式</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <button class="btn btn-primary" onclick="json2yamlTools.convert()">转换</button>
+                </div>
+                <div class="tool-bar-right">
+                    <button class="btn btn-outline" onclick="json2yamlTools.copy()">复制</button>
+                    <button class="btn btn-outline" onclick="json2yamlTools.clear()">清空</button>
+                </div>
+            </div>
+            <div class="editor-container">
+                <div class="editor-panel">
+                    <div class="editor-label">输入 JSON</div>
+                    <textarea id="json2yamlInput"></textarea>
+                </div>
+                <div class="editor-panel">
+                    <div class="editor-label">YAML 结果</div>
+                    <textarea id="json2yamlOutput" readonly></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- YAML转JSON -->
+        <section class="tool-page" id="tool-yaml2json">
+            <div class="tool-header">
+                <h2>YAML 转 JSON</h2>
+                <p>将YAML数据转换为JSON格式</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <button class="btn btn-primary" onclick="yaml2jsonTools.convert()">转换</button>
+                </div>
+                <div class="tool-bar-right">
+                    <button class="btn btn-outline" onclick="yaml2jsonTools.copy()">复制</button>
+                    <button class="btn btn-outline" onclick="yaml2jsonTools.clear()">清空</button>
+                </div>
+            </div>
+            <div class="editor-container">
+                <div class="editor-panel">
+                    <div class="editor-label">输入 YAML</div>
+                    <textarea id="yaml2jsonInput"></textarea>
+                </div>
+                <div class="editor-panel">
+                    <div class="editor-label">JSON 结果</div>
+                    <textarea id="yaml2jsonOutput" readonly></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- JSON转INI -->
+        <section class="tool-page" id="tool-json2ini">
+            <div class="tool-header">
+                <h2>JSON 转 INI</h2>
+                <p>将JSON数据转换为INI配置文件格式</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <button class="btn btn-primary" onclick="json2iniTools.convert()">转换</button>
+                </div>
+                <div class="tool-bar-right">
+                    <button class="btn btn-outline" onclick="json2iniTools.copy()">复制</button>
+                    <button class="btn btn-outline" onclick="json2iniTools.clear()">清空</button>
+                </div>
+            </div>
+            <div class="editor-container">
+                <div class="editor-panel">
+                    <div class="editor-label">输入 JSON</div>
+                    <textarea id="json2iniInput"></textarea>
+                </div>
+                <div class="editor-panel">
+                    <div class="editor-label">INI 结果</div>
+                    <textarea id="json2iniOutput" readonly></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- INI转JSON -->
+        <section class="tool-page" id="tool-ini2json">
+            <div class="tool-header">
+                <h2>INI 转 JSON</h2>
+                <p>将INI配置文件转换为JSON格式</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <button class="btn btn-primary" onclick="ini2jsonTools.convert()">转换</button>
+                </div>
+                <div class="tool-bar-right">
+                    <button class="btn btn-outline" onclick="ini2jsonTools.copy()">复制</button>
+                    <button class="btn btn-outline" onclick="ini2jsonTools.clear()">清空</button>
+                </div>
+            </div>
+            <div class="editor-container">
+                <div class="editor-panel">
+                    <div class="editor-label">输入 INI</div>
+                    <textarea id="ini2jsonInput"></textarea>
+                </div>
+                <div class="editor-panel">
+                    <div class="editor-label">JSON 结果</div>
+                    <textarea id="ini2jsonOutput" readonly></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== 编码解码 ========== -->
+
+        <!-- Base64 -->
+        <section class="tool-page" id="tool-base64">
+            <div class="tool-header">
+                <h2>Base64 编解码</h2>
+                <p>文本与Base64互转，完美支持中文</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <button class="btn btn-primary" onclick="base64Tools.encode()">编码 →</button>
+                    <button class="btn btn-primary" onclick="base64Tools.decode()">← 解码</button>
+                </div>
+                <div class="tool-bar-right">
+                    <button class="btn btn-outline" onclick="base64Tools.copy()">复制</button>
+                    <button class="btn btn-outline" onclick="base64Tools.clear()">清空</button>
+                </div>
+            </div>
+            <div class="editor-container">
+                <div class="editor-panel">
+                    <div class="editor-label">原始文本</div>
+                    <textarea id="base64Input"></textarea>
+                </div>
+                <div class="editor-panel">
+                    <div class="editor-label">Base64 结果</div>
+                    <textarea id="base64Output"></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- URL编解码 -->
+        <section class="tool-page" id="tool-urlcodec">
+            <div class="tool-header">
+                <h2>URL 编解码</h2>
+                <p>URL编码和解码，支持整个URL或仅参数部分</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <button class="btn btn-primary" onclick="urlencodeTools.encode()">URL编码</button>
+                    <button class="btn btn-primary" onclick="urlencodeTools.decode()">URL解码</button>
+                    <button class="btn btn-outline" onclick="urlencodeTools.encodeComponent()">组件编码</button>
+                    <button class="btn btn-outline" onclick="urlencodeTools.decodeComponent()">组件解码</button>
+                </div>
+                <div class="tool-bar-right">
+                    <button class="btn btn-outline" onclick="urlencodeTools.copy()">复制</button>
+                    <button class="btn btn-outline" onclick="urlencodeTools.clear()">清空</button>
+                </div>
+            </div>
+            <div class="editor-container">
+                <div class="editor-panel">
+                    <div class="editor-label">原始文本</div>
+                    <textarea id="urlencodeInput"></textarea>
+                </div>
+                <div class="editor-panel">
+                    <div class="editor-label">编码结果</div>
+                    <textarea id="urlencodeOutput"></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- Unicode -->
+        <section class="tool-page" id="tool-unicode">
+            <div class="tool-header">
+                <h2>Unicode 编解码</h2>
+                <p>Unicode转义序列与中文互转</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <button class="btn btn-primary" onclick="unicodeTools.encode()">编码</button>
+                    <button class="btn btn-primary" onclick="unicodeTools.decode()">解码</button>
+                </div>
+                <div class="tool-bar-right">
+                    <button class="btn btn-outline" onclick="unicodeTools.copy()">复制</button>
+                    <button class="btn btn-outline" onclick="unicodeTools.clear()">清空</button>
+                </div>
+            </div>
+            <div class="editor-container">
+                <div class="editor-panel">
+                    <div class="editor-label">原始文本</div>
+                    <textarea id="unicodeInput"></textarea>
+                </div>
+                <div class="editor-panel">
+                    <div class="editor-label">Unicode 结果</div>
+                    <textarea id="unicodeOutput"></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- HTML实体 -->
+        <section class="tool-page" id="tool-htmlentity">
+            <div class="tool-header">
+                <h2>HTML 实体编解码</h2>
+                <p>HTML特殊字符与实体编码互转</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <button class="btn btn-primary" onclick="htmlentityTools.encode()">编码</button>
+                    <button class="btn btn-primary" onclick="htmlentityTools.decode()">解码</button>
+                </div>
+                <div class="tool-bar-right">
+                    <button class="btn btn-outline" onclick="htmlentityTools.copy()">复制</button>
+                    <button class="btn btn-outline" onclick="htmlentityTools.clear()">清空</button>
+                </div>
+            </div>
+            <div class="editor-container">
+                <div class="editor-panel">
+                    <div class="editor-label">原始文本</div>
+                    <textarea id="htmlentityInput"></textarea>
+                </div>
+                <div class="editor-panel">
+                    <div class="editor-label">HTML实体结果</div>
+                    <textarea id="htmlentityOutput"></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hex编解码 -->
+        <section class="tool-page" id="tool-hex">
+            <div class="tool-header">
+                <h2>Hex 编解码</h2>
+                <p>文本与十六进制互转</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <button class="btn btn-primary" onclick="hexTools.encode()">编码</button>
+                    <button class="btn btn-primary" onclick="hexTools.decode()">解码</button>
+                </div>
+                <div class="tool-bar-right">
+                    <button class="btn btn-outline" onclick="hexTools.copy()">复制</button>
+                    <button class="btn btn-outline" onclick="hexTools.clear()">清空</button>
+                </div>
+            </div>
+            <div class="editor-container">
+                <div class="editor-panel">
+                    <div class="editor-label">原始文本</div>
+                    <textarea id="hexInput"></textarea>
+                </div>
+                <div class="editor-panel">
+                    <div class="editor-label">Hex 结果</div>
+                    <textarea id="hexOutput"></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- JWT解析 -->
+        <section class="tool-page" id="tool-jwt">
+            <div class="tool-header">
+                <h2>JWT 解析</h2>
+                <p>解析JWT Token的Header和Payload</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <button class="btn btn-primary" onclick="jwtTools.decode()">解析</button>
+                </div>
+                <div class="tool-bar-right">
+                    <button class="btn btn-outline" onclick="jwtTools.clear()">清空</button>
+                </div>
+            </div>
+            <div class="jwt-container">
+                <div class="jwt-input">
+                    <div class="editor-label">输入 JWT Token</div>
+                    <textarea id="jwtInput" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozjgNryP4J3jVmNHl0w5N_XgL0n3I9PlFUP0THsR8U"></textarea>
+                </div>
+                <div class="jwt-output">
+                    <div class="jwt-section">
+                        <div class="editor-label">Header</div>
+                        <pre id="jwtHeader"></pre>
+                    </div>
+                    <div class="jwt-section">
+                        <div class="editor-label">Payload</div>
+                        <pre id="jwtPayload"></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== 文本处理 ========== -->
+
+        <!-- 代码对比 -->
+        <section class="tool-page" id="tool-codediff">
+            <div class="tool-header">
+                <h2>代码对比</h2>
+                <p>专业代码对比工具，差异高亮显示，支持同步滚动</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <button class="btn btn-primary" onclick="codediffTools.compare()">对比</button>
+                    <button class="btn btn-outline" onclick="codediffTools.swap()">交换</button>
+                    <span class="divider"></span>
+                    <label class="checkbox-label"><input type="checkbox" id="codediffSync" checked> 同步滚动</label>
+                    <label class="checkbox-label"><input type="checkbox" id="codediffFormat"> 粘贴自动格式化</label>
+                    <select id="codediffLang" class="select" onchange="codediffTools.updateLang()">
+                        <option value="plain">纯文本</option>
+                        <option value="javascript">JavaScript</option>
+                        <option value="json">JSON</option>
+                        <option value="html">HTML</option>
+                        <option value="css">CSS</option>
+                        <option value="python">Python</option>
+                        <option value="java">Java</option>
+                    </select>
+                </div>
+                <div class="tool-bar-right">
+                    <button class="btn btn-outline" onclick="codediffTools.clear()">清空</button>
+                </div>
+            </div>
+            <div class="codediff-container">
+                <div class="codediff-panel">
+                    <div class="codediff-header">
+                        <span class="codediff-title">原始代码</span>
+                        <span class="codediff-stats" id="codediffStats1"></span>
+                    </div>
+                    <div class="codediff-editor" id="codediffEditor1">
+                        <div class="codediff-gutter" id="codediffGutter1"></div>
+                        <div class="codediff-scroll" id="codediffScroll1">
+                            <textarea id="codediffInput1" placeholder="粘贴原始代码..."></textarea>
+                            <pre class="codediff-highlight" id="codediffHighlight1"></pre>
+                        </div>
+                    </div>
+                </div>
+                <div class="codediff-panel">
+                    <div class="codediff-header">
+                        <span class="codediff-title">修改后代码</span>
+                        <span class="codediff-stats" id="codediffStats2"></span>
+                    </div>
+                    <div class="codediff-editor" id="codediffEditor2">
+                        <div class="codediff-gutter" id="codediffGutter2"></div>
+                        <div class="codediff-scroll" id="codediffScroll2">
+                            <textarea id="codediffInput2" placeholder="粘贴修改后代码..."></textarea>
+                            <pre class="codediff-highlight" id="codediffHighlight2"></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="codediff-summary" id="codediffSummary"></div>
+        </section>
+
+        <!-- 正则测试 -->
+        <section class="tool-page" id="tool-regex">
+            <div class="tool-header">
+                <h2>正则表达式测试</h2>
+                <p>在线测试正则表达式，实时高亮匹配结果</p>
+            </div>
+            <div class="regex-container">
+                <div class="regex-input-row">
+                    <input type="text" id="regexPattern" placeholder="输入正则表达式" class="input regex-input">
+                    <input type="text" id="regexFlags" value="g" class="input tiny-input" placeholder="标志">
+                </div>
+                <textarea id="regexTestInput" placeholder="输入测试文本..."></textarea>
+                <div class="regex-result" id="regexResult"></div>
+                <div class="regex-matches" id="regexMatches"></div>
+            </div>
+        </section>
+
+        <!-- 文本对比 -->
+        <section class="tool-page" id="tool-textdiff">
+            <div class="tool-header">
+                <h2>文本对比</h2>
+                <p>逐行对比两段文本的差异</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <button class="btn btn-primary" onclick="textdiffTools.compare()">对比</button>
+                </div>
+                <div class="tool-bar-right">
+                    <button class="btn btn-outline" onclick="textdiffTools.clear()">清空</button>
+                </div>
+            </div>
+            <div class="editor-container three-panel">
+                <div class="editor-panel">
+                    <div class="editor-label">原始文本</div>
+                    <textarea id="textdiffInput1"></textarea>
+                </div>
+                <div class="editor-panel">
+                    <div class="editor-label">对比文本</div>
+                    <textarea id="textdiffInput2"></textarea>
+                </div>
+                <div class="editor-panel">
+                    <div class="editor-label">差异结果</div>
+                    <div id="textdiffOutput" class="diff-output"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 字数统计 -->
+        <section class="tool-page" id="tool-textcount">
+            <div class="tool-header">
+                <h2>字数统计</h2>
+                <p>统计文本的字符数、单词数、行数等</p>
+            </div>
+            <textarea id="textcountInput" placeholder="输入或粘贴文本..." oninput="textcountTools.count()"></textarea>
+            <div class="stats-grid" id="textcountResult">
+                <div class="stat-item"><span class="stat-value">0</span><span class="stat-label">字符数</span></div>
+                <div class="stat-item"><span class="stat-value">0</span><span class="stat-label">不含空格</span></div>
+                <div class="stat-item"><span class="stat-value">0</span><span class="stat-label">单词数</span></div>
+                <div class="stat-item"><span class="stat-value">0</span><span class="stat-label">行数</span></div>
+                <div class="stat-item"><span class="stat-value">0</span><span class="stat-label">中文字数</span></div>
+                <div class="stat-item"><span class="stat-value">0</span><span class="stat-label">字节数</span></div>
+            </div>
+        </section>
+
+        <!-- 文本替换 -->
+        <section class="tool-page" id="tool-textreplace">
+            <div class="tool-header">
+                <h2>文本替换</h2>
+                <p>支持正则表达式的文本查找替换</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <input type="text" id="replaceFind" placeholder="查找内容" class="input">
+                    <input type="text" id="replaceWith" placeholder="替换为" class="input">
+                    <label class="checkbox-label"><input type="checkbox" id="replaceRegex"> 正则</label>
+                    <label class="checkbox-label"><input type="checkbox" id="replaceCase" checked> 区分大小写</label>
+                    <button class="btn btn-primary" onclick="textreplaceTools.replace()">全部替换</button>
+                </div>
+            </div>
+            <textarea id="textreplaceInput" placeholder="输入文本..."></textarea>
+            <div class="editor-label" style="margin-top:12px">替换结果</div>
+            <textarea id="textreplaceOutput" readonly></textarea>
+        </section>
+
+        <!-- 行排序 -->
+        <section class="tool-page" id="tool-linesort">
+            <div class="tool-header">
+                <h2>行排序</h2>
+                <p>对文本的每一行进行排序</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <button class="btn btn-primary" onclick="linesortTools.asc()">升序 A→Z</button>
+                    <button class="btn btn-primary" onclick="linesortTools.desc()">降序 Z→A</button>
+                    <button class="btn btn-outline" onclick="linesortTools.reverse()">反转顺序</button>
+                    <button class="btn btn-outline" onclick="linesortTools.shuffle()">随机打乱</button>
+                </div>
+                <div class="tool-bar-right">
+                    <button class="btn btn-outline" onclick="linesortTools.clear()">清空</button>
+                </div>
+            </div>
+            <div class="editor-container">
+                <div class="editor-panel">
+                    <div class="editor-label">输入文本</div>
+                    <textarea id="linesortInput"></textarea>
+                </div>
+                <div class="editor-panel">
+                    <div class="editor-label">排序结果</div>
+                    <textarea id="linesortOutput" readonly></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- 行去重 -->
+        <section class="tool-page" id="tool-linededup">
+            <div class="tool-header">
+                <h2>行去重</h2>
+                <p>去除文本中重复的行</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <button class="btn btn-primary" onclick="linededupTools.dedup()">去重</button>
+                    <label class="checkbox-label"><input type="checkbox" id="linededupCase"> 区分大小写</label>
+                </div>
+                <div class="tool-bar-right">
+                    <button class="btn btn-outline" onclick="linededupTools.clear()">清空</button>
+                </div>
+            </div>
+            <div class="editor-container">
+                <div class="editor-panel">
+                    <div class="editor-label">输入文本</div>
+                    <textarea id="linededupInput"></textarea>
+                </div>
+                <div class="editor-panel">
+                    <div class="editor-label">去重结果</div>
+                    <textarea id="linededupOutput" readonly></textarea>
+                </div>
+            </div>
+            <div class="status-bar" id="linededupStatus"></div>
+        </section>
+
+        <!-- 大小写转换 -->
+        <section class="tool-page" id="tool-caseconv">
+            <div class="tool-header">
+                <h2>大小写转换</h2>
+                <p>快速转换文本大小写格式</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <button class="btn btn-outline" onclick="caseconvTools.upper()">全部大写</button>
+                    <button class="btn btn-outline" onclick="caseconvTools.lower()">全部小写</button>
+                    <button class="btn btn-outline" onclick="caseconvTools.capitalize()">首字母大写</button>
+                    <button class="btn btn-outline" onclick="caseconvTools.toggle()">反转大小写</button>
+                </div>
+                <div class="tool-bar-right">
+                    <button class="btn btn-outline" onclick="caseconvTools.copy()">复制</button>
+                    <button class="btn btn-outline" onclick="caseconvTools.clear()">清空</button>
+                </div>
+            </div>
+            <textarea id="caseconvInput" placeholder="输入文本..." oninput="caseconvTools.update()"></textarea>
+        </section>
+
+        <!-- 字符串转换 -->
+        <section class="tool-page" id="tool-stringconv">
+            <div class="tool-header">
+                <h2>字符串格式转换</h2>
+                <p>驼峰、下划线、短横线等命名格式互转</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <input type="text" id="stringconvInput" placeholder="输入字符串" class="input" oninput="stringconvTools.convert()">
+                </div>
+            </div>
+            <div class="stats-grid" id="stringconvResult">
+                <div class="stat-item clickable" onclick="stringconvTools.copy('camelCase')"><span class="stat-value" id="str-camel">-</span><span class="stat-label">camelCase</span></div>
+                <div class="stat-item clickable" onclick="stringconvTools.copy('PascalCase')"><span class="stat-value" id="str-pascal">-</span><span class="stat-label">PascalCase</span></div>
+                <div class="stat-item clickable" onclick="stringconvTools.copy('snake_case')"><span class="stat-value" id="str-snake">-</span><span class="stat-label">snake_case</span></div>
+                <div class="stat-item clickable" onclick="stringconvTools.copy('kebab-case')"><span class="stat-value" id="str-kebab">-</span><span class="stat-label">kebab-case</span></div>
+                <div class="stat-item clickable" onclick="stringconvTools.copy('CONSTANT')"><span class="stat-value" id="str-constant">-</span><span class="stat-label">CONSTANT_CASE</span></div>
+                <div class="stat-item clickable" onclick="stringconvTools.copy('dot.case')"><span class="stat-value" id="str-dot">-</span><span class="stat-label">dot.case</span></div>
+            </div>
+        </section>
+
+        <!-- ========== 开发工具 ========== -->
+
+        <!-- 时间戳 -->
+        <section class="tool-page" id="tool-timestamp">
+            <div class="tool-header">
+                <h2>时间戳转换</h2>
+                <p>Unix时间戳与日期时间互转</p>
+            </div>
+            <div class="timestamp-current" id="currentTimeStamp"></div>
+            <div class="timestamp-container">
+                <div class="timestamp-section">
+                    <h4>时间戳 → 日期</h4>
+                    <input type="text" id="timestampInput" placeholder="输入时间戳（秒或毫秒）" class="input">
+                    <button class="btn btn-primary" onclick="timestampTools.toDate()" style="margin-top:8px">转换</button>
+                    <div class="timestamp-result" id="timestampToDateResult"></div>
+                </div>
+                <div class="timestamp-section">
+                    <h4>日期 → 时间戳</h4>
+                    <input type="datetime-local" id="dateInput" class="input">
+                    <button class="btn btn-primary" onclick="timestampTools.toTimestamp()" style="margin-top:8px">转换</button>
+                    <div class="timestamp-result" id="dateToTimestampResult"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 哈希计算 -->
+        <section class="tool-page" id="tool-hash">
+            <div class="tool-header">
+                <h2>哈希计算</h2>
+                <p>计算文本的MD5、SHA-1、SHA-256哈希值</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <button class="btn btn-primary" onclick="hashTools.calculate()">计算</button>
+                    <button class="btn btn-outline" onclick="hashTools.clear()">清空</button>
+                </div>
+            </div>
+            <textarea id="hashInput" placeholder="输入要计算哈希的文本"></textarea>
+            <div class="hash-results">
+                <div class="hash-item">
+                    <label>MD5</label>
+                    <input type="text" id="hashMd5" readonly class="input">
+                    <button class="btn btn-outline btn-small" onclick="hashTools.copy('hashMd5')">复制</button>
+                </div>
+                <div class="hash-item">
+                    <label>SHA-1</label>
+                    <input type="text" id="hashSha1" readonly class="input">
+                    <button class="btn btn-outline btn-small" onclick="hashTools.copy('hashSha1')">复制</button>
+                </div>
+                <div class="hash-item">
+                    <label>SHA-256</label>
+                    <input type="text" id="hashSha256" readonly class="input">
+                    <button class="btn btn-outline btn-small" onclick="hashTools.copy('hashSha256')">复制</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- UUID生成 -->
+        <section class="tool-page" id="tool-uuid">
+            <div class="tool-header">
+                <h2>UUID 生成器</h2>
+                <p>批量生成UUID / GUID</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <label class="label">数量:</label>
+                    <input type="number" id="uuidCount" value="10" min="1" max="1000" class="input tiny-input">
+                    <select id="uuidFormat" class="select">
+                        <option value="lower">小写</option>
+                        <option value="upper">大写</option>
+                        <option value="nohyphen">无连字符</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="uuidTools.generate()">生成</button>
+                    <label class="checkbox-label"><input type="checkbox" id="uuidNoHyphen"> 去掉连字符</label>
+                </div>
+                <div class="tool-bar-right">
+                    <button class="btn btn-outline" onclick="uuidTools.copy()">复制全部</button>
+                </div>
+            </div>
+            <textarea id="uuidOutput" readonly placeholder="点击"生成"按钮"></textarea>
+        </section>
+
+        <!-- 密码生成 -->
+        <section class="tool-page" id="tool-password">
+            <div class="tool-header">
+                <h2>密码生成器</h2>
+                <p>生成安全的随机密码</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <label class="label">长度:</label>
+                    <input type="number" id="pwdLength" value="16" min="4" max="128" class="input tiny-input">
+                    <label class="label">数量:</label>
+                    <input type="number" id="pwdCount" value="5" min="1" max="100" class="input tiny-input">
+                    <label class="checkbox-label"><input type="checkbox" id="pwdUpper" checked> 大写</label>
+                    <label class="checkbox-label"><input type="checkbox" id="pwdLower" checked> 小写</label>
+                    <label class="checkbox-label"><input type="checkbox" id="pwdDigit" checked> 数字</label>
+                    <label class="checkbox-label"><input type="checkbox" id="pwdSymbol" checked> 符号</label>
+                    <button class="btn btn-primary" onclick="passwordTools.generate()">生成</button>
+                </div>
+                <div class="tool-bar-right">
+                    <button class="btn btn-outline" onclick="passwordTools.copy()">复制全部</button>
+                </div>
+            </div>
+            <textarea id="passwordOutput" readonly placeholder="点击"生成"按钮"></textarea>
+        </section>
+
+        <!-- 颜色转换 -->
+        <section class="tool-page" id="tool-color">
+            <div class="tool-header">
+                <h2>颜色转换</h2>
+                <p>HEX、RGB、HSL颜色格式互转</p>
+            </div>
+            <div class="color-container">
+                <div class="color-input-group">
+                    <label>HEX</label>
+                    <input type="text" id="colorHex" value="#3498db" class="input" oninput="colorTools.convertFromHex()">
+                    <input type="color" id="colorPicker" value="#3498db">
+                </div>
+                <div class="color-input-group">
+                    <label>RGB</label>
+                    <input type="text" id="colorRgb" class="input" placeholder="rgb(52, 152, 219)">
+                    <button class="btn btn-outline" onclick="colorTools.convertFromRgb()">转换</button>
+                </div>
+                <div class="color-input-group">
+                    <label>HSL</label>
+                    <input type="text" id="colorHsl" class="input" placeholder="hsl(204, 70%, 53%)">
+                    <button class="btn btn-outline" onclick="colorTools.convertFromHsl()">转换</button>
+                </div>
+                <div class="color-preview" id="colorPreview"></div>
+            </div>
+        </section>
+
+        <!-- px/rem转换 -->
+        <section class="tool-page" id="tool-px2rem">
+            <div class="tool-header">
+                <h2>px / rem 转换</h2>
+                <p>CSS单位px与rem互转</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <label class="label">基准字号:</label>
+                    <input type="number" id="px2remBase" value="16" class="input tiny-input"> px
+                </div>
+            </div>
+            <div class="timestamp-container">
+                <div class="timestamp-section">
+                    <h4>px → rem</h4>
+                    <input type="number" id="pxInput" placeholder="输入px值" class="input" oninput="px2remTools.pxToRem()">
+                    <div class="timestamp-result" id="pxResult"></div>
+                </div>
+                <div class="timestamp-section">
+                    <h4>rem → px</h4>
+                    <input type="number" id="remInput" placeholder="输入rem值" class="input" oninput="px2remTools.remToPx()">
+                    <div class="timestamp-result" id="remResult"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cron解析 -->
+        <section class="tool-page" id="tool-crontab">
+            <div class="tool-header">
+                <h2>Cron 表达式解析</h2>
+                <p>解析Cron表达式，显示最近执行时间</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <input type="text" id="cronInput" value="0 0 * * *" placeholder="* * * * *" class="input" style="width:200px">
+                    <button class="btn btn-primary" onclick="crontabTools.parse()">解析</button>
+                </div>
+            </div>
+            <div class="help-box">
+                <div class="help-title">格式: 分 时 日 月 周</div>
+                <div class="help-grid">
+                    <span><code>*</code> 任意值</span>
+                    <span><code>,</code> 列表</span>
+                    <span><code>-</code> 范围</span>
+                    <span><code>/</code> 步长</span>
+                </div>
+            </div>
+            <div class="timestamp-result" id="cronResult" style="margin-top:16px;min-height:120px"></div>
+        </section>
+
+        <!-- 进制转换 -->
+        <section class="tool-page" id="tool-numberbase">
+            <div class="tool-header">
+                <h2>进制转换</h2>
+                <p>2/8/10/16进制互转</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <label class="label">输入数值:</label>
+                    <input type="text" id="numberInput" placeholder="输入数值" class="input" oninput="numberbaseTools.convert()">
+                    <label class="label">输入进制:</label>
+                    <select id="numberBase" class="select" onchange="numberbaseTools.convert()">
+                        <option value="10" selected>十进制</option>
+                        <option value="2">二进制</option>
+                        <option value="8">八进制</option>
+                        <option value="16">十六进制</option>
+                    </select>
+                </div>
+            </div>
+            <div class="stats-grid" id="numberResult">
+                <div class="stat-item clickable" onclick="numberbaseTools.copy('numBin')"><span class="stat-value" id="numBin">-</span><span class="stat-label">二进制</span></div>
+                <div class="stat-item clickable" onclick="numberbaseTools.copy('numOct')"><span class="stat-value" id="numOct">-</span><span class="stat-label">八进制</span></div>
+                <div class="stat-item clickable" onclick="numberbaseTools.copy('numDec')"><span class="stat-value" id="numDec">-</span><span class="stat-label">十进制</span></div>
+                <div class="stat-item clickable" onclick="numberbaseTools.copy('numHex')"><span class="stat-value" id="numHex">-</span><span class="stat-label">十六进制</span></div>
+            </div>
+        </section>
+
+        <!-- ========== 数据库工具 ========== -->
+
+        <!-- SQL格式化 -->
+        <section class="tool-page" id="tool-sqlformat">
+            <div class="tool-header">
+                <h2>SQL 格式化</h2>
+                <p>美化SQL语句，使其更易读，支持多种SQL方言</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <button class="btn btn-primary" onclick="sqlformatTools.format()">格式化</button>
+                    <button class="btn btn-outline" onclick="sqlformatTools.compress()">压缩</button>
+                    <button class="btn btn-outline" onclick="sqlformatTools.upper()">关键字大写</button>
+                    <button class="btn btn-outline" onclick="sqlformatTools.lower()">关键字小写</button>
+                </div>
+                <div class="tool-bar-right">
+                    <button class="btn btn-outline" onclick="sqlformatTools.copy()">复制</button>
+                    <button class="btn btn-outline" onclick="sqlformatTools.clear()">清空</button>
+                </div>
+            </div>
+            <div class="editor-container">
+                <div class="editor-panel">
+                    <div class="editor-label">输入 SQL</div>
+                    <textarea id="sqlformatInput" placeholder="粘贴你的SQL语句..."></textarea>
+                </div>
+                <div class="editor-panel">
+                    <div class="editor-label">格式化结果</div>
+                    <textarea id="sqlformatOutput" readonly></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- SQL转JSON -->
+        <section class="tool-page" id="tool-sql2json">
+            <div class="tool-header">
+                <h2>SQL 转 JSON</h2>
+                <p>将 SQL INSERT 语句或建表语句转换为 JSON 数据</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <select id="sql2jsonType" class="select">
+                        <option value="insert">INSERT 语句</option>
+                        <option value="create">CREATE TABLE</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="sql2jsonTools.convert()">转换</button>
+                </div>
+                <div class="tool-bar-right">
+                    <button class="btn btn-outline" onclick="sql2jsonTools.copy()">复制</button>
+                    <button class="btn btn-outline" onclick="sql2jsonTools.clear()">清空</button>
+                </div>
+            </div>
+            <div class="editor-container">
+                <div class="editor-panel">
+                    <div class="editor-label">输入 SQL</div>
+                    <textarea id="sql2jsonInput" placeholder="INSERT INTO users (id, name, email) VALUES (1, '张三', 'zhangsan@example.com');"></textarea>
+                </div>
+                <div class="editor-panel">
+                    <div class="editor-label">JSON 结果</div>
+                    <textarea id="sql2jsonOutput" readonly></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- JSON生成SQL -->
+        <section class="tool-page" id="tool-json2sql">
+            <div class="tool-header">
+                <h2>JSON 生成 SQL</h2>
+                <p>从 JSON 数据生成 INSERT / UPDATE 语句</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <label class="label">表名:</label>
+                    <input type="text" id="json2sqlTable" value="users" class="input small-input">
+                    <select id="json2sqlType" class="select">
+                        <option value="insert">INSERT</option>
+                        <option value="update">UPDATE</option>
+                        <option value="batch">批量 INSERT</option>
+                    </select>
+                    <select id="json2sqlDb" class="select">
+                        <option value="mysql">MySQL</option>
+                        <option value="postgresql">PostgreSQL</option>
+                        <option value="sqlite">SQLite</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="json2sqlTools.convert()">生成</button>
+                </div>
+                <div class="tool-bar-right">
+                    <button class="btn btn-outline" onclick="json2sqlTools.copy()">复制</button>
+                    <button class="btn btn-outline" onclick="json2sqlTools.clear()">清空</button>
+                </div>
+            </div>
+            <div class="editor-container">
+                <div class="editor-panel">
+                    <div class="editor-label">输入 JSON</div>
+                    <textarea id="json2sqlInput" placeholder='{"name": "张三", "age": 25, "email": "zhangsan@example.com"}'></textarea>
+                </div>
+                <div class="editor-panel">
+                    <div class="editor-label">SQL 结果</div>
+                    <textarea id="json2sqlOutput" readonly></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mock数据生成 -->
+        <section class="tool-page" id="tool-mockdata">
+            <div class="tool-header">
+                <h2>Mock 数据生成</h2>
+                <p>根据字段定义批量生成测试数据，支持导出 SQL / JSON / CSV</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <label class="label">表名:</label>
+                    <input type="text" id="mockTableName" value="users" class="input small-input">
+                    <label class="label">数量:</label>
+                    <input type="number" id="mockCount" value="10" min="1" max="1000" class="input tiny-input">
+                    <button class="btn btn-primary" onclick="mockdataTools.generate()">生成</button>
+                </div>
+                <div class="tool-bar-right">
+                    <select id="mockExportType" class="select">
+                        <option value="sql">导出 SQL</option>
+                        <option value="json">导出 JSON</option>
+                        <option value="csv">导出 CSV</option>
+                    </select>
+                    <button class="btn btn-outline" onclick="mockdataTools.export()">导出</button>
+                    <button class="btn btn-outline" onclick="mockdataTools.copy()">复制</button>
+                </div>
+            </div>
+
+            <!-- 字段定义区 -->
+            <div class="mock-fields" id="mockFields">
+                <div class="mock-field-header">
+                    <span>字段名</span>
+                    <span>类型</span>
+                    <span>Mock规则</span>
+                    <span>操作</span>
+                </div>
+                <div class="mock-field-list" id="mockFieldList">
+                    <!-- 动态生成 -->
+                </div>
+                <button class="btn btn-outline btn-small" onclick="mockdataTools.addField()" style="margin-top:8px">+ 添加字段</button>
+                <button class="btn btn-outline btn-small" onclick="mockdataTools.addPreset('user')" style="margin-top:8px">用户模板</button>
+                <button class="btn btn-outline btn-small" onclick="mockdataTools.addPreset('product')" style="margin-top:8px">商品模板</button>
+                <button class="btn btn-outline btn-small" onclick="mockdataTools.addPreset('order')" style="margin-top:8px">订单模板</button>
+            </div>
+
+            <div class="editor-label" style="margin-top:16px">生成结果</div>
+            <textarea id="mockOutput" readonly placeholder="点击"生成"按钮"></textarea>
+        </section>
+
+        <!-- 建表语句生成 -->
+        <section class="tool-page" id="tool-sqlgen">
+            <div class="tool-header">
+                <h2>建表语句生成</h2>
+                <p>根据字段定义生成 CREATE TABLE 语句</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <label class="label">表名:</label>
+                    <input type="text" id="sqlgenTableName" value="users" class="input small-input">
+                    <select id="sqlgenDb" class="select">
+                        <option value="mysql">MySQL</option>
+                        <option value="postgresql">PostgreSQL</option>
+                        <option value="sqlite">SQLite</option>
+                    </select>
+                    <label class="checkbox-label"><input type="checkbox" id="sqlgenTimestamp" checked> 时间戳字段</label>
+                    <button class="btn btn-primary" onclick="sqlgenTools.generate()">生成</button>
+                </div>
+                <div class="tool-bar-right">
+                    <button class="btn btn-outline" onclick="sqlgenTools.copy()">复制</button>
+                </div>
+            </div>
+
+            <div class="mock-fields" id="sqlgenFields">
+                <div class="mock-field-header">
+                    <span>字段名</span>
+                    <span>类型</span>
+                    <span>约束</span>
+                    <span>操作</span>
+                </div>
+                <div class="mock-field-list" id="sqlgenFieldList"></div>
+                <button class="btn btn-outline btn-small" onclick="sqlgenTools.addField()" style="margin-top:8px">+ 添加字段</button>
+                <button class="btn btn-outline btn-small" onclick="sqlgenTools.addPreset('user')" style="margin-top:8px">用户模板</button>
+            </div>
+
+            <div class="editor-label" style="margin-top:16px">生成结果</div>
+            <textarea id="sqlgenOutput" readonly placeholder="点击"生成"按钮"></textarea>
+        </section>
+
+        <!-- SQL解析ER -->
+        <section class="tool-page" id="tool-erdetect">
+            <div class="tool-header">
+                <h2>SQL 解析 ER 关系</h2>
+                <p>从 CREATE TABLE 语句中提取表结构和字段信息</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <button class="btn btn-primary" onclick="erdetectTools.parse()">解析</button>
+                    <button class="btn btn-outline" onclick="erdetectTools.sample()">示例SQL</button>
+                </div>
+                <div class="tool-bar-right">
+                    <button class="btn btn-outline" onclick="erdetectTools.clear()">清空</button>
+                </div>
+            </div>
+            <textarea id="erdetectInput" placeholder="粘贴 CREATE TABLE 语句..."></textarea>
+            <div class="editor-label" style="margin-top:12px">解析结果</div>
+            <div id="erdetectOutput" class="erd-output"></div>
+        </section>
+
+        <!-- ========== 图片工具 ========== -->
+
+        <!-- 图片压缩 -->
+        <section class="tool-page" id="tool-imgcompress">
+            <div class="tool-header">
+                <h2>图片压缩</h2>
+                <p>压缩图片文件大小，支持调整质量</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <label class="label">质量:</label>
+                    <input type="range" id="imgcompressQuality" min="10" max="100" value="80" style="width:150px">
+                    <span id="imgcompressQualityVal">80%</span>
+                    <label class="label">最大宽度:</label>
+                    <input type="number" id="imgcompressMaxWidth" value="1920" class="input tiny-input" style="width:70px"> px
+                    <button class="btn btn-primary" onclick="imgcompressTools.compress()">压缩</button>
+                    <button class="btn btn-outline" onclick="imgcompressTools.download()">下载</button>
+                </div>
+            </div>
+            <div class="img-tool-container">
+                <div class="img-upload-area" id="imgcompressUpload">
+                    <p>📁 点击或拖拽上传图片</p>
+                    <input type="file" id="imgcompressFile" accept="image/*" style="display:none">
+                    <img id="imgcompressPreview" class="img-preview" style="display:none">
+                </div>
+                <div class="img-info" id="imgcompressInfo"></div>
+            </div>
+        </section>
+
+        <!-- 调整大小 -->
+        <section class="tool-page" id="tool-imgresize">
+            <div class="tool-header">
+                <h2>图片调整大小</h2>
+                <p>缩放图片尺寸，支持等比缩放</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <label class="label">宽度:</label>
+                    <input type="number" id="imgresizeW" value="800" class="input tiny-input" style="width:70px">
+                    <label class="label">高度:</label>
+                    <input type="number" id="imgresizeH" value="600" class="input tiny-input" style="width:70px">
+                    <label class="checkbox-label"><input type="checkbox" id="imgresizeLock" checked> 锁定比例</label>
+                    <button class="btn btn-primary" onclick="imgresizeTools.resize()">调整</button>
+                    <button class="btn btn-outline" onclick="imgresizeTools.download()">下载</button>
+                </div>
+            </div>
+            <div class="img-tool-container">
+                <div class="img-upload-area" id="imgresizeUpload">
+                    <p>📁 点击或拖拽上传图片</p>
+                    <input type="file" id="imgresizeFile" accept="image/*" style="display:none">
+                    <img id="imgresizePreview" class="img-preview" style="display:none">
+                </div>
+                <div class="img-info" id="imgresizeInfo"></div>
+            </div>
+        </section>
+
+        <!-- 图片裁剪 -->
+        <section class="tool-page" id="tool-imgcrop">
+            <div class="tool-header">
+                <h2>图片裁剪</h2>
+                <p>自定义区域裁剪图片</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <label class="label">X:</label>
+                    <input type="number" id="imgcropX" value="0" class="input tiny-input" style="width:60px">
+                    <label class="label">Y:</label>
+                    <input type="number" id="imgcropY" value="0" class="input tiny-input" style="width:60px">
+                    <label class="label">宽:</label>
+                    <input type="number" id="imgcropW" value="400" class="input tiny-input" style="width:60px">
+                    <label class="label">高:</label>
+                    <input type="number" id="imgcropH" value="300" class="input tiny-input" style="width:60px">
+                    <button class="btn btn-primary" onclick="imgcropTools.crop()">裁剪</button>
+                    <button class="btn btn-outline" onclick="imgcropTools.download()">下载</button>
+                </div>
+            </div>
+            <div class="img-tool-container">
+                <div class="img-upload-area" id="imgcropUpload">
+                    <p>📁 点击或拖拽上传图片</p>
+                    <input type="file" id="imgcropFile" accept="image/*" style="display:none">
+                    <img id="imgcropPreview" class="img-preview" style="display:none">
+                </div>
+                <div class="img-info" id="imgcropInfo"></div>
+            </div>
+        </section>
+
+        <!-- 格式转换 -->
+        <section class="tool-page" id="tool-imgformat">
+            <div class="tool-header">
+                <h2>图片格式转换</h2>
+                <p>在 PNG / JPG / WebP / BMP 格式之间互转</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <label class="label">目标格式:</label>
+                    <select id="imgformatType" class="select">
+                        <option value="image/png">PNG</option>
+                        <option value="image/jpeg">JPG</option>
+                        <option value="image/webp">WebP</option>
+                    </select>
+                    <label class="label">质量:</label>
+                    <input type="range" id="imgformatQuality" min="10" max="100" value="90" style="width:120px">
+                    <span id="imgformatQualityVal">90%</span>
+                    <button class="btn btn-primary" onclick="imgformatTools.convert()">转换</button>
+                    <button class="btn btn-outline" onclick="imgformatTools.download()">下载</button>
+                </div>
+            </div>
+            <div class="img-tool-container">
+                <div class="img-upload-area" id="imgformatUpload">
+                    <p>📁 点击或拖拽上传图片</p>
+                    <input type="file" id="imgformatFile" accept="image/*" style="display:none">
+                    <img id="imgformatPreview" class="img-preview" style="display:none">
+                </div>
+                <div class="img-info" id="imgformatInfo"></div>
+            </div>
+        </section>
+
+        <!-- 旋转翻转 -->
+        <section class="tool-page" id="tool-imgrotate">
+            <div class="tool-header">
+                <h2>图片旋转 / 翻转</h2>
+                <p>旋转角度或水平/垂直翻转图片</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <button class="btn btn-outline" onclick="imgrotateTools.rotate(-90)">↺ 左转90°</button>
+                    <button class="btn btn-outline" onclick="imgrotateTools.rotate(90)">↻ 右转90°</button>
+                    <button class="btn btn-outline" onclick="imgrotateTools.rotate(180)">旋转180°</button>
+                    <span class="divider"></span>
+                    <button class="btn btn-outline" onclick="imgrotateTools.flip('h')">水平翻转</button>
+                    <button class="btn btn-outline" onclick="imgrotateTools.flip('v')">垂直翻转</button>
+                    <span class="divider"></span>
+                    <label class="label">自定义角度:</label>
+                    <input type="number" id="imgrotateAngle" value="45" class="input tiny-input" style="width:60px">
+                    <button class="btn btn-outline" onclick="imgrotateTools.rotate(parseInt(document.getElementById('imgrotateAngle').value))">旋转</button>
+                    <button class="btn btn-outline" onclick="imgrotateTools.download()">下载</button>
+                </div>
+            </div>
+            <div class="img-tool-container">
+                <div class="img-upload-area" id="imgrotateUpload">
+                    <p>📁 点击或拖拽上传图片</p>
+                    <input type="file" id="imgrotateFile" accept="image/*" style="display:none">
+                    <img id="imgrotatePreview" class="img-preview" style="display:none">
+                </div>
+                <div class="img-info" id="imgrotateInfo"></div>
+            </div>
+        </section>
+
+        <!-- 滤镜效果 -->
+        <section class="tool-page" id="tool-imgfilter">
+            <div class="tool-header">
+                <h2>图片滤镜</h2>
+                <p>为图片添加各种滤镜效果</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <button class="btn btn-outline" onclick="imgfilterTools.apply('grayscale')">灰度</button>
+                    <button class="btn btn-outline" onclick="imgfilterTools.apply('sepia')">复古</button>
+                    <button class="btn btn-outline" onclick="imgfilterTools.apply('invert')">反色</button>
+                    <button class="btn btn-outline" onclick="imgfilterTools.apply('blur')">模糊</button>
+                    <button class="btn btn-outline" onclick="imgfilterTools.apply('brightness')">增亮</button>
+                    <button class="btn btn-outline" onclick="imgfilterTools.apply('contrast')">增强对比</button>
+                    <button class="btn btn-outline" onclick="imgfilterTools.apply('saturate')">增加饱和</button>
+                    <button class="btn btn-outline" onclick="imgfilterTools.apply('reset')">重置</button>
+                    <button class="btn btn-outline" onclick="imgfilterTools.download()">下载</button>
+                </div>
+            </div>
+            <div class="img-tool-container">
+                <div class="img-upload-area" id="imgfilterUpload">
+                    <p>📁 点击或拖拽上传图片</p>
+                    <input type="file" id="imgfilterFile" accept="image/*" style="display:none">
+                    <img id="imgfilterPreview" class="img-preview" style="display:none">
+                </div>
+                <div class="img-info" id="imgfilterInfo"></div>
+            </div>
+        </section>
+
+        <!-- 添加水印 -->
+        <section class="tool-page" id="tool-imgwatermark">
+            <div class="tool-header">
+                <h2>添加水印</h2>
+                <p>为图片添加文字水印</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <label class="label">水印文字:</label>
+                    <input type="text" id="imgwatermarkText" value="© DevTools" class="input" style="width:150px">
+                    <label class="label">字号:</label>
+                    <input type="number" id="imgwatermarkSize" value="24" class="input tiny-input" style="width:50px">
+                    <label class="label">颜色:</label>
+                    <input type="color" id="imgwatermarkColor" value="#ffffff" style="width:35px;height:30px">
+                    <label class="label">透明度:</label>
+                    <input type="range" id="imgwatermarkOpacity" min="10" max="100" value="50" style="width:80px">
+                    <label class="label">位置:</label>
+                    <select id="imgwatermarkPos" class="select">
+                        <option value="center">居中</option>
+                        <option value="bottom-right" selected>右下角</option>
+                        <option value="bottom-left">左下角</option>
+                        <option value="top-right">右上角</option>
+                        <option value="top-left">左上角</option>
+                        <option value="tile">平铺</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="imgwatermarkTools.apply()">添加水印</button>
+                    <button class="btn btn-outline" onclick="imgwatermarkTools.download()">下载</button>
+                </div>
+            </div>
+            <div class="img-tool-container">
+                <div class="img-upload-area" id="imgwatermarkUpload">
+                    <p>📁 点击或拖拽上传图片</p>
+                    <input type="file" id="imgwatermarkFile" accept="image/*" style="display:none">
+                    <img id="imgwatermarkPreview" class="img-preview" style="display:none">
+                </div>
+                <div class="img-info" id="imgwatermarkInfo"></div>
+            </div>
+        </section>
+
+        <!-- ========== 其他工具 ========== -->
+
+        <!-- 二维码生成 -->
+        <section class="tool-page" id="tool-qrcode">
+            <div class="tool-header">
+                <h2>二维码生成</h2>
+                <p>将文本或链接生成二维码</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <input type="text" id="qrcodeInput" placeholder="输入文本或URL" class="input" style="width:400px" value="https://example.com">
+                    <button class="btn btn-primary" onclick="qrcodeTools.generate()">生成</button>
+                    <button class="btn btn-outline" onclick="qrcodeTools.download()">下载图片</button>
+                </div>
+            </div>
+            <div class="qrcode-container">
+                <canvas id="qrcodeCanvas"></canvas>
+            </div>
+        </section>
+
+        <!-- Markdown预览 -->
+        <section class="tool-page" id="tool-markdown">
+            <div class="tool-header">
+                <h2>Markdown 预览</h2>
+                <p>实时预览Markdown渲染效果</p>
+            </div>
+            <div class="editor-container">
+                <div class="editor-panel">
+                    <div class="editor-label">Markdown 源码</div>
+                    <textarea id="markdownInput" oninput="markdownTools.render()"># Hello World
+
+这是一段 **Markdown** 文本。
+
+- 列表项 1
+- 列表项 2
+- 列表项 3
+
+```javascript
+console.log('Hello!');
+```</textarea>
+                </div>
+                <div class="editor-panel">
+                    <div class="editor-label">预览效果</div>
+                    <div id="markdownOutput" class="markdown-preview"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Lorem生成 -->
+        <section class="tool-page" id="tool-Lorem">
+            <div class="tool-header">
+                <h2>Lorem Ipsum 生成</h2>
+                <p>生成随机占位文本</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <label class="label">段落数:</label>
+                    <input type="number" id="loremCount" value="3" min="1" max="50" class="input tiny-input">
+                    <button class="btn btn-primary" onclick="loremTools.generate()">生成</button>
+                </div>
+                <div class="tool-bar-right">
+                    <button class="btn btn-outline" onclick="loremTools.copy()">复制</button>
+                </div>
+            </div>
+            <textarea id="loremOutput" readonly></textarea>
+        </section>
+
+        <!-- 图片转Base64 -->
+        <section class="tool-page" id="tool-img2base64">
+            <div class="tool-header">
+                <h2>图片转 Base64</h2>
+                <p>将图片转换为Base64编码的Data URI</p>
+            </div>
+            <div class="upload-area" id="uploadArea">
+                <p>📁 点击或拖拽图片到这里</p>
+                <input type="file" id="imgUpload" accept="image/*" style="display:none">
+            </div>
+            <div class="tool-bar" style="margin-top:12px">
+                <div class="tool-bar-left">
+                    <button class="btn btn-outline" onclick="img2base64Tools.copy()">复制Base64</button>
+                    <button class="btn btn-outline" onclick="img2base64Tools.clear()">清空</button>
+                </div>
+            </div>
+            <textarea id="img2base64Output" readonly placeholder="Base64结果将显示在这里"></textarea>
+        </section>
+
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <p>DevTools - 开发者必备工具集 | 所有数据仅在浏览器本地处理，不会上传到任何服务器</p>
+    </footer>
+
+    <!-- Toast通知 -->
+    <div class="toast" id="toast"></div>
+
+    <!-- 外部库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/xml/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/fold/foldcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/fold/foldgutter.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/fold/brace-fold.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+
+    <!-- 应用脚本 -->
+    <script src="js/utils/common.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/tools/json-formatter.js"></script>
+    <script src="js/tools/json-other.js"></script>
+    <script src="js/tools/encoding.js"></script>
+    <script src="js/tools/text.js"></script>
+    <script src="js/tools/codediff.js"></script>
+    <script src="js/tools/dev.js"></script>
+    <script src="js/tools/db.js"></script>
+    <script src="js/tools/img.js"></script>
+    <script src="js/tools/other.js"></script>
+</body>
+</html>
