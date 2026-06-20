@@ -1,77 +1,22 @@
 // 其他工具
 
-// 二维码生成（简易实现）
+// 二维码生成（基于 qrious 库，可被扫描识别）
 const qrcodeTools = {
     generate() {
-        const text = document.getElementById('qrcodeInput').value;
+        const text = document.getElementById('qrcodeInput').value.trim();
         if (!text) { showToast('请输入文本或URL'); return; }
 
         const canvas = document.getElementById('qrcodeCanvas');
-        const ctx = canvas.getContext('2d');
-        const size = 250;
-        canvas.width = size;
-        canvas.height = size;
+        if (typeof QRious === 'undefined') { showToast('二维码库未加载'); return; }
 
-        // 简易二维码绘制（使用第三方库会更好，这里用Canvas模拟）
-        // 实际项目中建议引入 qrcode.js 库
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, size, size);
-
-        // 生成伪二维码图案
-        const moduleSize = 5;
-        const modules = Math.floor(size / moduleSize);
-        const data = this.encode(text, modules);
-
-        ctx.fillStyle = '#000000';
-        for (let row = 0; row < modules; row++) {
-            for (let col = 0; col < modules; col++) {
-                if (data[row][col]) {
-                    ctx.fillRect(col * moduleSize, row * moduleSize, moduleSize, moduleSize);
-                }
-            }
-        }
-
-        // 绘制定位图案
-        this.drawFinderPattern(ctx, 0, 0, moduleSize);
-        this.drawFinderPattern(ctx, (modules - 7) * moduleSize, 0, moduleSize);
-        this.drawFinderPattern(ctx, 0, (modules - 7) * moduleSize, moduleSize);
-    },
-
-    encode(text, size) {
-        const grid = Array.from({length: size}, () => Array(size).fill(false));
-        const hash = this.hashCode(text);
-
-        // 基于文本生成确定性图案
-        for (let i = 0; i < size; i++) {
-            for (let j = 0; j < size; j++) {
-                // 跳过定位图案区域
-                if ((i < 8 && j < 8) || (i < 8 && j >= size - 8) || (i >= size - 8 && j < 8)) continue;
-                grid[i][j] = ((hash * (i + 1) * (j + 1)) % 100) < 45;
-            }
-        }
-        return grid;
-    },
-
-    hashCode(str) {
-        let hash = 0;
-        for (let i = 0; i < str.length; i++) {
-            const char = str.charCodeAt(i);
-            hash = ((hash << 5) - hash) + char;
-            hash |= 0;
-        }
-        return Math.abs(hash);
-    },
-
-    drawFinderPattern(ctx, x, y, moduleSize) {
-        // 外框
-        ctx.fillStyle = '#000000';
-        ctx.fillRect(x, y, 7 * moduleSize, 7 * moduleSize);
-        // 白色内框
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(x + moduleSize, y + moduleSize, 5 * moduleSize, 5 * moduleSize);
-        // 黑色中心
-        ctx.fillStyle = '#000000';
-        ctx.fillRect(x + 2 * moduleSize, y + 2 * moduleSize, 3 * moduleSize, 3 * moduleSize);
+        new QRious({
+            element: canvas,
+            value: text,
+            size: 256,
+            level: 'M',
+            background: '#ffffff',
+            foreground: '#000000'
+        });
     },
 
     download() {

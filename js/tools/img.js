@@ -119,9 +119,7 @@ const imgUtils = {
 // ===== 图片压缩 =====
 const imgcompressTools = {
     init() {
-        imgUtils.initUpload('imgcompress', (img) => {
-            document.getElementById('imgresizeW').value = img.width;
-        });
+        imgUtils.initUpload('imgcompress');
 
         const slider = document.getElementById('imgcompressQuality');
         if (slider) {
@@ -545,6 +543,205 @@ const imgwatermarkTools = {
     }
 };
 
+// ===== 应用图标生成 =====
+const appiconTools = {
+    // 预设方案：每项 { name, size, type }；ico 用 icoSizes 数组
+    _presets: {
+        app: [
+            { name: 'icon@512.png', size: 512, type: 'image/png' },
+            { name: 'icon.png',     size: 256, type: 'image/png' },
+            { name: 'rusterm.ico',   type: 'image/x-icon', icoSizes: [16, 32, 48, 256] }
+        ],
+        favicon: [
+            { name: 'favicon-16.png', size: 16, type: 'image/png' },
+            { name: 'favicon-32.png', size: 32, type: 'image/png' },
+            { name: 'apple-touch-icon.png', size: 180, type: 'image/png' },
+            { name: 'favicon.ico', type: 'image/x-icon', icoSizes: [16, 32, 48] }
+        ],
+        android: [
+            { name: 'ic_launcher-mdpi.png',    size: 48 },
+            { name: 'ic_launcher-hdpi.png',    size: 72 },
+            { name: 'ic_launcher-xhdpi.png',  size: 96 },
+            { name: 'ic_launcher-xxhdpi.png', size: 144 },
+            { name: 'ic_launcher-xxxhdpi.png', size: 192 }
+        ],
+        ios: [20, 29, 40, 60, 76, 120, 152, 167, 180, 1024].map(s => ({ name: `icon-${s}.png`, size: s }))
+    },
+    _currentPreset: 'app',
+    _results: {},   // { name: Blob }
+
+    init() {
+        imgUtils.initUpload('appicon');
+    },
+
+    // 根据当前方案构建输出规格
+    buildSpecs() {
+        if (this._currentPreset === 'custom') {
+            const raw = document.getElementById('appiconCustom').value;
+            const sizes = raw.split(',')
+                .map(s => parseInt(s.trim()))
+                .filter(n => n > 0 && n <= 1024);
+            if (!sizes.length) return null;
+            return sizes.map(s => ({ name: `icon-${s}.png`, size: s, type: 'image/png' }));
+        }
+        return this._presets[this._currentPreset].map(s => ({
+            ...s,
+            type: s.type || 'image/png'
+        }));
+    },
+
+    onPresetChange() {
+        this._currentPreset = document.getElementById('appiconPreset').value;
+        document.getElementById('appiconCustom').style.display =
+            this._currentPreset === 'custom' ? '' : 'none';
+        document.getElementById('appiconResults').innerHTML = '';
+        this._results = {};
+    },
+
+    // 居中裁剪为正方形并缩放到目标尺寸，返回 canvas
+    _renderSquare(img, size) {
+        const side = Math.min(img.width, img.height);
+        const sx = (img.width - side) / 2;
+        const sy = (img.height - side) / 2;
+
+        const canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        ctx.imageSmoothingQuality = 'high';
+        ctx.drawImage(img, sx, sy, side, side, 0, 0, size, size);
+        return canvas;
+    },
+
+    // 将多尺寸 PNG 封装为 ICO（Blob）
+    _buildIco(img, icoSizes) {
+        const pngs = icoSizes.map(size => {
+            const canvas = this._renderSquare(img, size);
+            const dataURL = canvas.toDataURL('image/png');
+            const base64 = dataURL.split(',')[1];
+            const bin = atob(base64);
+            const bytes = new Uint8Array(bin.length);
+            for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+            return { size, bytes };
+        });
+
+        const count = pngs.length;
+        const headerSize = 6;
+        const dirSize = 16 * count;
+        let offset = headerSize + dirSize;
+
+        const entries = pngs.map(p => {
+            const entry = {
+                width: p.size === 256 ? 0 : p.size,   // ICO 规范：256 用 0 表示
+                height: p.size === 256 ? 0 : p.size,
+                bytes: p.bytes,
+                offset
+            };
+            offset += p.bytes.length;
+            return entry;
+        });
+
+        const buf = new ArrayBuffer(offset);
+        const dv = new DataView(buf);
+        let p = 0;
+
+        // ICONDIR
+        dv.setUint16(p, 0, true); p += 2;     // reserved
+        dv.setUint16(p, 1, true); p += 2;     // type: 1 = icon
+        dv.setUint16(p, count, true); p += 2; // count
+
+        // ICONDIRENTRY
+        entries.forEach(e => {
+            dv.setUint8(p++, e.width);
+            dv.setUint8(p++, e.height);
+            dv.setUint8(p++, 0);     // palette
+            dv.setUint8(p++, 0);     // reserved
+            dv.setUint16(p, 1, true); p += 2;   // planes
+            dv.setUint16(p, 32, true); p += 2;  // bpp
+            dv.setUint32(p, e.bytes.length, true); p += 4;
+            dv.setUint32(p, e.offset, true); p += 4;
+        });
+
+        // 图像数据
+        entries.forEach(e => {
+            new Uint8Array(buf, e.offset, e.bytes.length).set(e.bytes);
+        });
+
+        return new Blob([buf], { type: 'image/x-icon' });
+    },
+
+    async generate() {
+        const img = imgUtils.getImage('appicon');
+        if (!img) { showToast('请先上传图片'); return; }
+
+        const specs = this.buildSpecs();
+        if (!specs) { showToast('请输入有效尺寸，如 16,32,128'); return; }
+
+        const results = document.getElementById('appiconResults');
+        const cards = [];
+        this._results = {};
+
+        for (const spec of specs) {
+            let blob;
+            if (spec.type === 'image/x-icon') {
+                blob = this._buildIco(img, spec.icoSizes);
+            } else {
+                const canvas = this._renderSquare(img, spec.size);
+                blob = await imgUtils.canvasToBlob(canvas, spec.type);
+            }
+            this._results[spec.name] = blob;
+
+            const sizeText = spec.type === 'image/x-icon'
+                ? '多尺寸 ICO ' + spec.icoSizes.join('/')
+                : spec.size + '×' + spec.size;
+
+            cards.push(`
+                <div class="appicon-card">
+                    <div class="appicon-thumb"><img src="${URL.createObjectURL(blob)}"></div>
+                    <div class="appicon-meta">
+                        <div class="appicon-name">${spec.name}</div>
+                        <div class="appicon-size">${sizeText}</div>
+                        <div class="appicon-file">${(blob.size / 1024).toFixed(1)} KB</div>
+                    </div>
+                    <button class="btn btn-outline btn-small" onclick="appiconTools.downloadOne('${spec.name}')">下载</button>
+                </div>
+            `);
+        }
+
+        results.innerHTML = cards.join('');
+        showToast('图标生成完成');
+    },
+
+    downloadOne(name) {
+        const blob = this._results[name];
+        if (!blob) { showToast('请先生成图标'); return; }
+        imgUtils.downloadBlob(blob, name);
+    },
+
+    async downloadAll() {
+        if (!Object.keys(this._results).length) { showToast('请先生成图标'); return; }
+        if (typeof JSZip === 'undefined') { showToast('打包库未加载'); return; }
+
+        const zip = new JSZip();
+        for (const name in this._results) {
+            zip.file(name, this._results[name]);
+        }
+        const blob = await zip.generateAsync({ type: 'blob' });
+        imgUtils.downloadBlob(blob, 'app-icons.zip');
+        showToast('已打包下载');
+    },
+
+    clear() {
+        this._results = {};
+        document.getElementById('appiconResults').innerHTML = '';
+        const preview = document.getElementById('appiconPreview');
+        if (preview) preview.style.display = 'none';
+        const info = document.getElementById('appiconInfo');
+        if (info) { info.innerHTML = ''; info.classList.remove('show'); }
+        imgUtils._images.appicon = null;
+    }
+};
+
 // 初始化所有图片工具
 document.addEventListener('DOMContentLoaded', () => {
     imgcompressTools.init();
@@ -554,4 +751,5 @@ document.addEventListener('DOMContentLoaded', () => {
     imgrotateTools.init();
     imgfilterTools.init();
     imgwatermarkTools.init();
+    appiconTools.init();
 });

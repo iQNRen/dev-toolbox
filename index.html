@@ -24,7 +24,7 @@
     <!-- 主导航 - 一级分类 -->
     <nav class="main-nav">
         <div class="nav-tabs">
-            <a href="#" class="nav-tab active" data-category="json">
+            <a href="#" class="nav-tab" data-category="json">
                 <span class="nav-icon">{ }</span>
                 <span class="nav-label">JSON工具</span>
             </a>
@@ -36,7 +36,7 @@
                 <span class="nav-icon">🔐</span>
                 <span class="nav-label">编码解码</span>
             </a>
-            <a href="#" class="nav-tab" data-category="text">
+            <a href="#" class="nav-tab active" data-category="text">
                 <span class="nav-icon">📝</span>
                 <span class="nav-label">文本处理</span>
             </a>
@@ -52,6 +52,10 @@
                 <span class="nav-icon">🖼️</span>
                 <span class="nav-label">图片工具</span>
             </a>
+            <a href="#" class="nav-tab" data-category="net">
+                <span class="nav-icon">🌐</span>
+                <span class="nav-label">网络工具</span>
+            </a>
             <a href="#" class="nav-tab" data-category="other">
                 <span class="nav-icon">📦</span>
                 <span class="nav-label">其他工具</span>
@@ -62,8 +66,8 @@
     <!-- 二级导航 - 工具选择 -->
     <div class="sub-nav" id="subNav">
         <!-- JSON工具子导航 -->
-        <div class="sub-nav-group active" data-category="json">
-            <a href="#" class="sub-tab active" data-tool="formatter">格式化/美化</a>
+        <div class="sub-nav-group" data-category="json">
+            <a href="#" class="sub-tab" data-tool="formatter">格式化/美化</a>
             <a href="#" class="sub-tab" data-tool="compress">压缩/最小化</a>
             <a href="#" class="sub-tab" data-tool="validate">校验/验证</a>
             <a href="#" class="sub-tab" data-tool="tree">树形视图</a>
@@ -96,9 +100,10 @@
         </div>
 
         <!-- 文本处理子导航 -->
-        <div class="sub-nav-group" data-category="text">
-            <a href="#" class="sub-tab" data-tool="codediff">代码对比</a>
+        <div class="sub-nav-group active" data-category="text">
+            <a href="#" class="sub-tab active" data-tool="codediff">代码对比</a>
             <a href="#" class="sub-tab" data-tool="regex">正则测试</a>
+            <a href="#" class="sub-tab" data-tool="regexref">正则速查</a>
             <a href="#" class="sub-tab" data-tool="textdiff">文本对比</a>
             <a href="#" class="sub-tab" data-tool="textcount">字数统计</a>
             <a href="#" class="sub-tab" data-tool="textreplace">文本替换</a>
@@ -111,12 +116,15 @@
         <!-- 开发工具子导航 -->
         <div class="sub-nav-group" data-category="dev">
             <a href="#" class="sub-tab" data-tool="timestamp">时间戳</a>
+            <a href="#" class="sub-tab" data-tool="datecalc">日期计算</a>
             <a href="#" class="sub-tab" data-tool="hash">哈希计算</a>
             <a href="#" class="sub-tab" data-tool="uuid">UUID生成</a>
             <a href="#" class="sub-tab" data-tool="password">密码生成</a>
+            <a href="#" class="sub-tab" data-tool="random">随机数生成</a>
             <a href="#" class="sub-tab" data-tool="color">颜色转换</a>
             <a href="#" class="sub-tab" data-tool="px2rem">px/rem转换</a>
             <a href="#" class="sub-tab" data-tool="crontab">Cron解析</a>
+            <a href="#" class="sub-tab" data-tool="httpstatus">HTTP状态码</a>
             <a href="#" class="sub-tab" data-tool="numberbase">进制转换</a>
         </div>
 
@@ -140,6 +148,15 @@
             <a href="#" class="sub-tab" data-tool="imgfilter">滤镜效果</a>
             <a href="#" class="sub-tab" data-tool="imgwatermark">添加水印</a>
             <a href="#" class="sub-tab" data-tool="img2base64">图片转Base64</a>
+            <a href="#" class="sub-tab" data-tool="appicon">应用图标生成</a>
+        </div>
+
+        <!-- 网络工具子导航 -->
+        <div class="sub-nav-group" data-category="net">
+            <a href="#" class="sub-tab" data-tool="myip">我的IP</a>
+            <a href="#" class="sub-tab" data-tool="iplookup">IP归属地</a>
+            <a href="#" class="sub-tab" data-tool="dns">DNS解析</a>
+            <a href="#" class="sub-tab" data-tool="httpping">HTTP探活</a>
         </div>
 
         <!-- 其他工具子导航 -->
@@ -148,6 +165,8 @@
             <a href="#" class="sub-tab" data-tool="markdown">Markdown预览</a>
             <a href="#" class="sub-tab" data-tool="Lorem">Lorem生成</a>
             <a href="#" class="sub-tab" data-tool="img2base64">图片转Base64</a>
+            <a href="#" class="sub-tab" data-tool="linuxcmd">Linux命令查询</a>
+            <a href="#" class="sub-tab" data-tool="mimequery">MIME类型速查</a>
         </div>
     </div>
 
@@ -157,7 +176,7 @@
         <!-- ========== JSON工具 ========== -->
 
         <!-- JSON格式化 -->
-        <section class="tool-page active" id="tool-formatter">
+        <section class="tool-page" id="tool-formatter">
             <div class="tool-header">
                 <h2>JSON 格式化 / 美化</h2>
                 <p>将压缩的JSON格式化为易读格式，支持自定义缩进</p>
@@ -814,7 +833,7 @@
         <!-- ========== 文本处理 ========== -->
 
         <!-- 代码对比 -->
-        <section class="tool-page" id="tool-codediff">
+        <section class="tool-page active" id="tool-codediff">
             <div class="tool-header">
                 <h2>代码对比</h2>
                 <p>专业代码对比工具，差异高亮显示，支持同步滚动</p>
@@ -840,7 +859,8 @@
                     <button class="btn btn-outline" onclick="codediffTools.clear()">清空</button>
                 </div>
             </div>
-            <div class="codediff-container">
+            <div class="codediff-summary" id="codediffSummary"></div>
+            <div class="codediff-container" id="codediffContainer">
                 <div class="codediff-panel">
                     <div class="codediff-header">
                         <span class="codediff-title">原始代码</span>
@@ -867,8 +887,8 @@
                         </div>
                     </div>
                 </div>
+                <div class="codediff-resizer" id="codediffResizer" title="上下拖拽调整高度"></div>
             </div>
-            <div class="codediff-summary" id="codediffSummary"></div>
         </section>
 
         <!-- 正则测试 -->
@@ -1262,6 +1282,40 @@
                 <div class="stat-item clickable" onclick="numberbaseTools.copy('numDec')"><span class="stat-value" id="numDec">-</span><span class="stat-label">十进制</span></div>
                 <div class="stat-item clickable" onclick="numberbaseTools.copy('numHex')"><span class="stat-value" id="numHex">-</span><span class="stat-label">十六进制</span></div>
             </div>
+        </section>
+
+        <!-- 随机数生成 -->
+        <section class="tool-page" id="tool-random">
+            <div class="tool-header">
+                <h2>随机数生成器</h2>
+                <p>批量生成指定范围的随机数，支持整数/小数、不重复</p>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-bar-left">
+                    <label class="label">最小值</label>
+                    <input type="number" id="randomMin" class="input tiny-input" value="1">
+                    <label class="label">最大值</label>
+                    <input type="number" id="randomMax" class="input tiny-input" value="100">
+                    <label class="label">数量</label>
+                    <input type="number" id="randomCount" class="input tiny-input" value="10" min="1" max="10000">
+                    <label class="checkbox-label"><input type="checkbox" id="randomDecimal"> 小数</label>
+                    <label class="checkbox-label"><input type="checkbox" id="randomUnique"> 不重复</label>
+                    <label class="label">小数位</label>
+                    <input type="number" id="randomDigits" class="input tiny-input" value="2" min="0" max="10">
+                </div>
+                <div class="tool-bar-right">
+                    <select id="randomFormat" class="select">
+                        <option value="line" selected>换行分隔</option>
+                        <option value="comma">逗号分隔</option>
+                        <option value="space">空格分隔</option>
+                        <option value="json">JSON 数组</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="randomTools.generate()">生成</button>
+                    <button class="btn btn-outline" onclick="randomTools.copy()">复制</button>
+                    <button class="btn btn-outline" onclick="randomTools.clear()">清空</button>
+                </div>
+            </div>
+            <textarea id="randomOutput" readonly placeholder="点击"生成"按钮"></textarea>
         </section>
 
         <!-- ========== 数据库工具 ========== -->
@@ -1687,6 +1741,49 @@
             </div>
         </section>
 
+        <!-- 应用图标生成 -->
+        <section class="tool-page" id="tool-appicon">
+            <div class="tool-header">
+                <h2>应用图标生成器</h2>
+                <p>上传图片，自动居中裁剪并生成 macOS / Linux / Windows 应用图标，支持逐个下载或一键打包</p>
+            </div>
+            <div class="img-tool-container">
+                <div class="img-upload-area" id="appiconUpload">
+                    <p>📁 点击或拖拽上传图片（建议 ≥ 512×512）</p>
+                    <input type="file" id="appiconFile" accept="image/*" style="display:none">
+                    <img id="appiconPreview" class="img-preview" style="display:none">
+                </div>
+                <div class="img-info" id="appiconInfo"></div>
+            </div>
+            <div class="tool-bar" style="margin-top:16px">
+                <div class="tool-bar-left">
+                    <label class="label">输出方案:</label>
+                    <select id="appiconPreset" class="select" onchange="appiconTools.onPresetChange()">
+                        <option value="app" selected>应用图标三件套</option>
+                        <option value="favicon">Favicon 网站图标</option>
+                        <option value="android">Android 应用图标</option>
+                        <option value="ios">iOS 应用图标</option>
+                        <option value="custom">自定义尺寸</option>
+                    </select>
+                    <input type="text" id="appiconCustom" class="input" style="display:none;width:200px" placeholder="尺寸，逗号分隔 如 16,32,128">
+                    <button class="btn btn-primary" onclick="appiconTools.generate()">生成图标</button>
+                    <button class="btn btn-outline" onclick="appiconTools.downloadAll()">📦 一键打包下载</button>
+                    <button class="btn btn-outline" onclick="appiconTools.clear()">清空</button>
+                </div>
+            </div>
+            <div class="appicon-results" id="appiconResults"></div>
+            <div class="help-box" style="margin-top:16px">
+                <div class="help-title">方案说明</div>
+                <div class="help-grid">
+                    <span><b>应用图标三件套</b> icon@512.png / icon.png / rusterm.ico(16~256)</span>
+                    <span><b>Favicon</b> 16/32/180 PNG + favicon.ico</span>
+                    <span><b>Android</b> mdpi~xxxhdpi (48~192)</span>
+                    <span><b>iOS</b> 20/29/40/60/76/120/152/167/180/1024</span>
+                    <span><b>自定义</b> 任意尺寸，逗号分隔</span>
+                </div>
+            </div>
+        </section>
+
         <!-- ========== 其他工具 ========== -->
 
         <!-- 二维码生成 -->
@@ -1773,6 +1870,156 @@ console.log('Hello!');
             <textarea id="img2base64Output" readonly placeholder="Base64结果将显示在这里"></textarea>
         </section>
 
+        <!-- Linux命令查询 -->
+        <section class="tool-page" id="tool-linuxcmd">
+            <div class="tool-header">
+                <h2>Linux 命令查询</h2>
+                <p>常用 Linux 命令速查，支持搜索与分类筛选，附常用参数与示例</p>
+            </div>
+            <div class="linuxcmd-searchbar">
+                <input type="text" id="linuxcmdSearch" class="input" placeholder="🔍 搜索命令或描述，如 find / 查找大文件" oninput="linuxcmdTools.filter()">
+                <span class="linuxcmd-count" id="linuxcmdCount"></span>
+            </div>
+            <div class="linuxcmd-cats" id="linuxcmdCats"></div>
+            <div class="linuxcmd-list" id="linuxcmdList"></div>
+        </section>
+
+        <!-- HTTP状态码速查 -->
+        <section class="tool-page" id="tool-httpstatus">
+            <div class="tool-header">
+                <h2>HTTP 状态码速查</h2>
+                <p>HTTP 响应状态码含义速查，支持搜索与分类筛选</p>
+            </div>
+            <div class="linuxcmd-searchbar">
+                <input type="text" id="httpstatusSearch" class="input" placeholder="🔍 搜索状态码或描述，如 404 / 未找到" oninput="httpstatusTools.filter()">
+                <span class="linuxcmd-count" id="httpstatusCount"></span>
+            </div>
+            <div class="linuxcmd-cats" id="httpstatusCats"></div>
+            <div class="linuxcmd-list" id="httpstatusList"></div>
+        </section>
+
+        <!-- 日期计算器 -->
+        <section class="tool-page" id="tool-datecalc">
+            <div class="tool-header">
+                <h2>日期计算器</h2>
+                <p>计算两个日期相差天数、日期加减天数、工作日数量</p>
+            </div>
+            <div class="timestamp-container">
+                <div class="timestamp-section">
+                    <h4>日期差</h4>
+                    <div class="datecalc-field"><label>起始日期</label><input type="date" id="datecalcStart" class="input"></div>
+                    <div class="datecalc-field"><label>结束日期</label><input type="date" id="datecalcEnd" class="input"></div>
+                    <button class="btn btn-primary" onclick="datecalcTools.diff()">计算</button>
+                    <div class="timestamp-result" id="datecalcDiffResult"></div>
+                </div>
+                <div class="timestamp-section">
+                    <h4>日期加减</h4>
+                    <div class="datecalc-field"><label>基准日期</label><input type="date" id="datecalcBase" class="input"></div>
+                    <div class="datecalc-field"><label>加减天数（可负）</label><input type="number" id="datecalcDelta" class="input tiny-input" placeholder="如 30 或 -7"></div>
+                    <button class="btn btn-primary" onclick="datecalcTools.addDays()">计算</button>
+                    <div class="timestamp-result" id="datecalcAddResult"></div>
+                </div>
+                <div class="timestamp-section">
+                    <h4>工作日计算</h4>
+                    <div class="datecalc-field"><label>起始日期</label><input type="date" id="datecalcWkStart" class="input"></div>
+                    <div class="datecalc-field"><label>结束日期</label><input type="date" id="datecalcWkEnd" class="input"></div>
+                    <button class="btn btn-primary" onclick="datecalcTools.workdays()">计算</button>
+                    <div class="timestamp-result" id="datecalcWkResult"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 正则速查表 -->
+        <section class="tool-page" id="tool-regexref">
+            <div class="tool-header">
+                <h2>正则表达式速查</h2>
+                <p>常用正则元字符、量词、字符类、分组、断言速查表</p>
+            </div>
+            <div class="linuxcmd-searchbar">
+                <input type="text" id="regexrefSearch" class="input" placeholder="🔍 搜索，如 量词 / \d" oninput="regexrefTools.filter()">
+                <span class="linuxcmd-count" id="regexrefCount"></span>
+            </div>
+            <div class="linuxcmd-list" id="regexrefList"></div>
+        </section>
+
+        <!-- MIME类型速查 -->
+        <section class="tool-page" id="tool-mimequery">
+            <div class="tool-header">
+                <h2>MIME 类型速查</h2>
+                <p>文件扩展名与 MIME 类型对照表，支持搜索与分类</p>
+            </div>
+            <div class="linuxcmd-searchbar">
+                <input type="text" id="mimequerySearch" class="input" placeholder="🔍 搜索扩展名或MIME，如 .json / image" oninput="mimequeryTools.filter()">
+                <span class="linuxcmd-count" id="mimequeryCount"></span>
+            </div>
+            <div class="linuxcmd-cats" id="mimequeryCats"></div>
+            <div class="linuxcmd-list" id="mimequeryList"></div>
+        </section>
+
+        <!-- ========== 网络工具 ========== -->
+
+        <!-- 我的IP -->
+        <section class="tool-page" id="tool-myip">
+            <div class="tool-header">
+                <h2>我的公网 IP</h2>
+                <p>查询当前网络的出口公网 IP 及地理位置信息</p>
+            </div>
+            <div class="tool-bar">
+                <button class="btn btn-primary" onclick="myipTools.query()">查询我的 IP</button>
+                <button class="btn btn-outline" onclick="myipTools.copy()">复制 IP</button>
+            </div>
+            <div class="net-result" id="myipResult"></div>
+        </section>
+
+        <!-- IP归属地 -->
+        <section class="tool-page" id="tool-iplookup">
+            <div class="tool-header">
+                <h2>IP / 域名归属地查询</h2>
+                <p>查询 IP 或域名的地理位置、运营商信息（域名会先解析为 IP）</p>
+            </div>
+            <div class="tool-bar">
+                <input type="text" id="iplookupInput" class="input" style="flex:1;min-width:240px" placeholder="输入 IP 或域名，如 8.8.8.8 / baidu.com">
+                <button class="btn btn-primary" onclick="iplookupTools.query()">查询</button>
+            </div>
+            <div class="net-result" id="iplookupResult"></div>
+        </section>
+
+        <!-- DNS解析 -->
+        <section class="tool-page" id="tool-dns">
+            <div class="tool-header">
+                <h2>DNS 解析</h2>
+                <p>通过 DNS-over-HTTPS 查询域名记录（Cloudflare 1.1.1.1）</p>
+            </div>
+            <div class="tool-bar">
+                <input type="text" id="dnsInput" class="input" style="flex:1;min-width:200px" placeholder="域名，如 baidu.com" value="baidu.com">
+                <select id="dnsType" class="select">
+                    <option value="A">A (IPv4)</option>
+                    <option value="AAAA">AAAA (IPv6)</option>
+                    <option value="CNAME">CNAME</option>
+                    <option value="MX">MX (邮件)</option>
+                    <option value="TXT">TXT</option>
+                    <option value="NS">NS</option>
+                </select>
+                <button class="btn btn-primary" onclick="dnsTools.query()">查询</button>
+            </div>
+            <div class="net-result" id="dnsResult"></div>
+        </section>
+
+        <!-- HTTP探活 -->
+        <section class="tool-page" id="tool-httpping">
+            <div class="tool-header">
+                <h2>HTTP 探活与延迟</h2>
+                <p>探测 URL 连通性并测量响应延迟（浏览器版 ping）</p>
+            </div>
+            <div class="tool-bar">
+                <input type="text" id="httppingInput" class="input" style="flex:1;min-width:240px" placeholder="URL，如 https://www.baidu.com" value="https://www.baidu.com">
+                <label class="label">次数</label>
+                <input type="number" id="httppingCount" class="input tiny-input" value="5" min="1" max="20">
+                <button class="btn btn-primary" onclick="httppingTools.ping()">开始探测</button>
+            </div>
+            <div class="net-result" id="httppingResult"></div>
+        </section>
+
     </main>
 
     <!-- 页脚 -->
@@ -1792,6 +2039,11 @@ console.log('Hello!');
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/fold/brace-fold.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
 
+    <!-- JSZip 用于打包下载 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <!-- qrious 用于二维码生成 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+
     <!-- 应用脚本 -->
     <script src="js/utils/common.js"></script>
     <script src="js/app.js"></script>
@@ -1804,5 +2056,11 @@ console.log('Hello!');
     <script src="js/tools/db.js"></script>
     <script src="js/tools/img.js"></script>
     <script src="js/tools/other.js"></script>
+    <script src="js/tools/linuxcmd.js"></script>
+    <script src="js/tools/httpstatus.js"></script>
+    <script src="js/tools/datecalc.js"></script>
+    <script src="js/tools/regexref.js"></script>
+    <script src="js/tools/mimequery.js"></script>
+    <script src="js/tools/network.js"></script>
 </body>
 </html>

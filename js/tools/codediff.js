@@ -64,7 +64,41 @@ const codediffTools = {
         input1.addEventListener('keydown', onTab);
         input2.addEventListener('keydown', onTab);
 
+        this._initResizer();
         this.updateGutter();
+    },
+
+    // 拖拽底部手柄调整编辑区高度
+    _initResizer() {
+        const resizer = document.getElementById('codediffResizer');
+        const container = document.getElementById('codediffContainer');
+        if (!resizer || !container) return;
+
+        let dragging = false, startY = 0, startH = 0;
+
+        resizer.addEventListener('mousedown', (e) => {
+            dragging = true;
+            resizer.classList.add('dragging');
+            startY = e.clientY;
+            startH = container.offsetHeight;
+            document.body.style.userSelect = 'none';
+            document.body.style.cursor = 'row-resize';
+            e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!dragging) return;
+            const h = Math.max(180, Math.min(1200, startH + (e.clientY - startY)));
+            container.style.height = h + 'px';
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (!dragging) return;
+            dragging = false;
+            resizer.classList.remove('dragging');
+            document.body.style.userSelect = '';
+            document.body.style.cursor = '';
+        });
     },
 
     // 两边都有内容时自动对比

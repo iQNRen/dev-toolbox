@@ -164,6 +164,68 @@ const crontabTools = {
     }
 };
 
+// 随机数生成
+const randomTools = {
+    generate() {
+        const min = parseFloat(document.getElementById('randomMin').value);
+        const max = parseFloat(document.getElementById('randomMax').value);
+        const count = Math.min(Math.max(parseInt(document.getElementById('randomCount').value) || 1, 1), 10000);
+        const decimal = document.getElementById('randomDecimal').checked;
+        const unique = document.getElementById('randomUnique').checked;
+        const digits = Math.min(Math.max(parseInt(document.getElementById('randomDigits').value) || 0, 0), 10);
+        const format = document.getElementById('randomFormat').value;
+
+        if (isNaN(min) || isNaN(max)) { showToast('请输入有效的数值范围'); return; }
+        if (min > max) { showToast('最小值不能大于最大值'); return; }
+
+        let nums;
+        if (unique) {
+            // 不重复：用 Set 去重，范围不足时提前停止
+            const set = new Set();
+            let guard = 0;
+            const limit = count * 1000;
+            while (set.size < count && guard < limit) {
+                set.add(this.rand(min, max, decimal, digits));
+                guard++;
+            }
+            nums = Array.from(set);
+            if (nums.length < count) {
+                showToast(`范围内不重复值不足，仅生成 ${nums.length} 个（可扩大范围或取消"不重复"）`);
+            }
+        } else {
+            nums = [];
+            for (let i = 0; i < count; i++) nums.push(this.rand(min, max, decimal, digits));
+        }
+
+        let text;
+        switch (format) {
+            case 'comma': text = nums.join(', '); break;
+            case 'space': text = nums.join(' '); break;
+            case 'json':  text = JSON.stringify(nums); break;
+            default:      text = nums.join('\n');
+        }
+        document.getElementById('randomOutput').value = text;
+        showToast(`已生成 ${nums.length} 个随机数`);
+    },
+
+    rand(min, max, decimal, digits) {
+        if (decimal) {
+            const v = Math.random() * (max - min) + min;
+            return +v.toFixed(digits);
+        }
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    },
+
+    copy() {
+        const v = document.getElementById('randomOutput').value;
+        if (v) copyToClipboard(v); else showToast('请先生成随机数');
+    },
+
+    clear() {
+        document.getElementById('randomOutput').value = '';
+    }
+};
+
 // 进制转换
 const numberbaseTools = {
     convert() {
