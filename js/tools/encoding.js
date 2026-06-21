@@ -17,12 +17,21 @@ const base64Tools = {
         }
     },
 
+    /** 获取待解码内容：优先从 Base64 结果框读取，如果为空则自动从原始文本框取 */
+    _getDecodeInput() {
+        return getDecodeInput('base64Output', 'base64Input');
+    },
+
     decode() {
-        const input = document.getElementById('base64Output').value;
-        if (!input.trim()) {
-            showToast('请输入要解码的Base64文本');
+        let input = this._getDecodeInput();
+        if (!input) {
+            showToast('请将要解码的Base64粘贴到上方或下方的输入框中');
             return;
         }
+
+        // 自动补全缺失的 padding
+        input = input.replace(/\s/g, '');
+        while (input.length % 4 !== 0) input += '=';
 
         try {
             const decoded = base64Decode(input);
@@ -61,9 +70,9 @@ const urlencodeTools = {
     },
 
     decode() {
-        const input = document.getElementById('urlencodeOutput').value;
-        if (!input.trim()) {
-            showToast('请输入要解码的URL');
+        const input = getDecodeInput('urlencodeOutput', 'urlencodeInput');
+        if (!input) {
+            showToast('请将要解码的URL粘贴到上方或下方的输入框中');
             return;
         }
 
@@ -87,9 +96,9 @@ const urlencodeTools = {
     },
 
     decodeComponent() {
-        const input = document.getElementById('urlencodeOutput').value;
-        if (!input.trim()) {
-            showToast('请输入要解码的文本');
+        const input = getDecodeInput('urlencodeOutput', 'urlencodeInput');
+        if (!input) {
+            showToast('请将要解码的文本粘贴到上方或下方的输入框中');
             return;
         }
 
@@ -139,9 +148,9 @@ const unicodeTools = {
     },
 
     decode() {
-        const input = document.getElementById('unicodeOutput').value;
-        if (!input.trim()) {
-            showToast('请输入要解码的Unicode文本');
+        const input = getDecodeInput('unicodeOutput', 'unicodeInput');
+        if (!input) {
+            showToast('请将要解码的Unicode文本粘贴到上方或下方的输入框中');
             return;
         }
 
@@ -184,9 +193,9 @@ const htmlentityTools = {
     },
 
     decode() {
-        const input = document.getElementById('htmlentityOutput').value;
-        if (!input.trim()) {
-            showToast('请输入要解码的HTML实体');
+        const input = getDecodeInput('htmlentityOutput', 'htmlentityInput');
+        if (!input) {
+            showToast('请将要解码的HTML实体粘贴到上方或下方的输入框中');
             return;
         }
 
@@ -221,8 +230,8 @@ const hexTools = {
     },
 
     decode() {
-        const input = document.getElementById('hexOutput').value;
-        if (!input.trim()) { showToast('请输入Hex数据'); return; }
+        const input = getDecodeInput('hexOutput', 'hexInput');
+        if (!input) { showToast('请将要解码的Hex数据粘贴到上方或下方的输入框中'); return; }
         try {
             const bytes = input.replace(/\s+/g, '').match(/.{1,2}/g)
                 .map(h => parseInt(h, 16));

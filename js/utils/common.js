@@ -27,6 +27,24 @@ async function copyToClipboard(text) {
     }
 }
 
+/**
+ * 智能获取待解码内容：优先从输出框读取，如果为空则自动从输入框取。
+ * 解决用户习惯把内容贴到上面"原始文本"框但解码读下面"结果"框的问题。
+ * @param {string} outputId - 输出框（编码结果）ID
+ * @param {string} inputId - 输入框（原始文本）ID
+ * @returns {string} 内容，都为空返回 ''
+ */
+function getDecodeInput(outputId, inputId) {
+    const out = document.getElementById(outputId);
+    const inp = document.getElementById(inputId);
+    if (out.value.trim()) return out.value;
+    if (inp.value.trim()) {
+        out.value = inp.value;
+        return inp.value;
+    }
+    return '';
+}
+
 // 格式化文件大小
 function formatFileSize(bytes) {
     if (bytes === 0) return '0 Bytes';

@@ -200,8 +200,8 @@ const escapeTools = {
         document.getElementById('escapeOutput').value = escaped.slice(1, -1);
     },
     unescape() {
-        const input = document.getElementById('escapeOutput').value;
-        if (!input) { showToast('请输入转义文本'); return; }
+        const input = getDecodeInput('escapeOutput', 'escapeInput');
+        if (!input) { showToast('请将要反转义的文本粘贴到上方或下方的输入框中'); return; }
         try {
             const unescaped = JSON.parse('"' + input + '"');
             document.getElementById('escapeInput').value = unescaped;
